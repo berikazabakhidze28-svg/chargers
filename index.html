@@ -443,6 +443,28 @@
       font-family: inherit;
     }
 
+    /* ── CATEGORY FILTERS ── */
+    .cat-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .cat-btn {
+      background: #fff;
+      border: 1px solid #ddd;
+      color: #555;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .cat-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
+    .cat-btn.active { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+
     @media (max-width: 600px) {
       .hero { padding: 36px 5%; }
       .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -524,10 +546,10 @@
         <option value="default" data-ka="ნაგულისხმევი" data-en="Default">ნაგულისხმევი</option>
         <option value="price-asc" data-ka="ფასი: იაფიდან ძვირამდე" data-en="Price: Low to High">ფასი: იაფიდან ძვირამდე</option>
         <option value="price-desc" data-ka="ფასი: ძვირიდან იაფამდე" data-en="Price: High to Low">ფასი: ძვირიდან იაფამდე</option>
-        <option value="new" data-ka="სიახლე" data-en="New Arrivals">სიახლე</option>
       </select>
     </div>
   </div>
+  <div class="cat-filters" id="cat-filters"></div>
   <div class="grid" id="product-grid"></div>
 </section>
 
@@ -577,102 +599,78 @@
   const PHONE = '995551546446';
 
   const products = [
-    {
-      id: 1,
-      nameKa: 'USB მანქანის დამტენი',
-      nameEn: 'Single USB Car Charger',
-      specKa: '5V / 2.4A · უნივერსალური',
-      specEn: '5V / 2.4A · Universal fit',
-      price: 9,
-      oldPrice: null,
-      emoji: '🔌',
-      isNew: false,
-      isSale: false,
-    },
-    {
-      id: 2,
-      nameKa: 'ორმაგი USB მანქანის დამტენი',
-      nameEn: 'Dual USB Car Charger',
-      specKa: '3.4A სულ · ორი პორტი',
-      specEn: '3.4A total · Two ports',
-      price: 14,
-      oldPrice: 18,
-      emoji: '⚡',
-      isNew: false,
-      isSale: true,
-    },
-    {
-      id: 3,
-      nameKa: 'USB-C მანქანის დამტენი 20W',
-      nameEn: 'USB-C Car Charger 20W',
-      specKa: 'Power Delivery 20W · iPhone & Android',
-      specEn: 'Power Delivery 20W · iPhone & Android',
-      price: 19,
-      oldPrice: null,
-      emoji: '🚀',
-      isNew: true,
-      isSale: false,
-    },
-    {
-      id: 4,
-      nameKa: 'სწრაფი დამტენი QC 3.0',
-      nameEn: 'Quick Charge 3.0 Charger',
-      specKa: 'Qualcomm QC 3.0 · 4× სწრაფი',
-      specEn: 'Qualcomm QC 3.0 · 4× faster',
-      price: 22,
-      oldPrice: 28,
-      emoji: '⚡',
-      isNew: true,
-      isSale: true,
-    },
-    {
-      id: 5,
-      nameKa: 'USB-A → USB-C კაბელი 1მ',
-      nameEn: 'USB-A to USB-C Cable 1m',
-      specKa: 'გრეხილი ნეილონი · სწრაფი დატენვა',
-      specEn: 'Braided nylon · Fast charging',
-      price: 8,
-      oldPrice: null,
-      emoji: '🔗',
-      isNew: false,
-      isSale: false,
-    },
-    {
-      id: 6,
-      nameKa: 'უნივერსალური ადაპტერი',
-      nameEn: 'Universal Travel Adapter',
-      specKa: 'EU/UK/US/AU · 2 USB პორტი',
-      specEn: 'EU/UK/US/AU · 2 USB ports',
-      price: 25,
-      oldPrice: null,
-      emoji: '🌍',
-      isNew: false,
-      isSale: false,
-    },
+    // ── კომპლექტი / Bundles ──
+    { id:1,  cat:'bundle',   emoji:'📦', nameKa:'ამერიკული კომპლექტი',                   nameEn:'American Bundle',                         price:1200, oldPrice:1430, isSale:true  },
+    { id:2,  cat:'bundle',   emoji:'📦', nameKa:'ტესლას კომპლექტი',                      nameEn:'Tesla Bundle',                            price:1000, oldPrice:1260, isSale:true  },
+    // ── გადამყვანი / Adapters ──
+    { id:3,  cat:'adapter',  emoji:'🔌', nameKa:'FastCharger CCS2 to CCS1',              nameEn:'FastCharger CCS2 to CCS1',                price:400,  oldPrice:500,  isSale:true  },
+    { id:4,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla to Type 1 (J1772)',               nameEn:'Tesla to Type 1 (J1772)',                 price:180,  oldPrice:null, isSale:false },
+    { id:5,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1',                     nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:120,  oldPrice:150,  isSale:true  },
+    { id:6,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 ჩამკეტით',           nameEn:'Type 2 to Type 1 with Locker',            price:170,  oldPrice:null, isSale:false },
+    { id:7,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla FastCharger CCS2 to Tesla (AC+DC)', nameEn:'Tesla FastCharger Adapter CCS2 to Tesla', price:300, oldPrice:null, isSale:false },
+    { id:8,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla Type 1 to Tesla',                nameEn:'Tesla Adapter Type 1 (J1772) to Tesla',   price:50,   oldPrice:80,   isSale:true  },
+    { id:9,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla Type 2 to Tesla (AC)',           nameEn:'Tesla Adapter Type 2 to Tesla (AC)',      price:150,  oldPrice:200,  isSale:true  },
+    { id:10, cat:'adapter',  emoji:'🔌', nameKa:'სახლის დამტენის 32A→16A გადამყვანი',  nameEn:'Home Charger 32A to 16A Adapter',         price:50,   oldPrice:null, isSale:false },
+    // ── დამტენის სადგური / Charging Stations ──
+    { id:11, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1 (J1772)',        nameEn:'Home Charging Station Type 1 (J1772)',    price:1100, oldPrice:null, isSale:false },
+    { id:12, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 40A',             nameEn:'Home Charging Station Tesla 40A',         price:580,  oldPrice:null, isSale:false },
+    { id:13, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 32A',             nameEn:'Home Charging Station Tesla 32A',         price:500,  oldPrice:null, isSale:false },
+    // ── სახლის პორტატული დამტენი / Portable Chargers ──
+    { id:14, cat:'portable', emoji:'🔋', nameKa:'პორტატული დამტენი Type 1 V2',         nameEn:'Home Portable Charger Type 1 (J1772) V2', price:380, oldPrice:null, isSale:false },
+    { id:15, cat:'portable', emoji:'🔋', nameKa:'პორტატული დამტენი 32A Type 1',        nameEn:'Home Portable Charger 32A Type 1 (J1772)',price:500,  oldPrice:600,  isSale:true  },
+    // ── ქალაქის დამტენი / City Chargers ──
+    { id:16, cat:'city',     emoji:'🏙️', nameKa:'ქუჩის დამტენი Type 2 → Tesla',        nameEn:'City Charger Type 2 to Tesla',            price:350,  oldPrice:400,  isSale:true  },
+    { id:17, cat:'city',     emoji:'🏙️', nameKa:'ქუჩის დამტენი Type 2 → Type 1',      nameEn:'City Charger Type 2 to Type 1 (J1772)',   price:350,  oldPrice:400,  isSale:true  },
+    // ── აქსესუარები / Accessories ──
+    { id:18, cat:'accessory',emoji:'💾', nameKa:'Tesla 64გბ ფლეშკა',                   nameEn:'Tesla 64GB Flash Drive',                  price:60,   oldPrice:null, isSale:false },
+    { id:19, cat:'accessory',emoji:'💾', nameKa:'Tesla 128გბ ფლეშკა',                  nameEn:'Tesla 128GB Flash Drive',                 price:80,   oldPrice:null, isSale:false },
+  ];
+
+  const categories = [
+    { id:'all',       ka:'ყველა',                    en:'All'              },
+    { id:'bundle',    ka:'კომპლექტი',                en:'Bundles'          },
+    { id:'adapter',   ka:'გადამყვანი',               en:'Adapters'         },
+    { id:'station',   ka:'დამტენის სადგური',         en:'Charging Stations'},
+    { id:'portable',  ka:'პორტატული დამტენი',       en:'Portable Chargers'},
+    { id:'city',      ka:'ქალაქის დამტენი',          en:'City Chargers'    },
+    { id:'accessory', ka:'აქსესუარები',              en:'Accessories'      },
   ];
 
   let lang = 'ka';
-  let currentProducts = [...products];
+  let activeCat = 'all';
+  let sortVal = 'default';
+
+  function getFiltered() {
+    let list = activeCat === 'all' ? [...products] : products.filter(p => p.cat === activeCat);
+    if (sortVal === 'price-asc')  list.sort((a,b) => a.price - b.price);
+    if (sortVal === 'price-desc') list.sort((a,b) => b.price - a.price);
+    return list;
+  }
+
+  function renderCategories() {
+    document.getElementById('cat-filters').innerHTML = categories.map(c => `
+      <button class="cat-btn ${activeCat === c.id ? 'active' : ''}" onclick="setCategory('${c.id}')">
+        ${lang === 'ka' ? c.ka : c.en}
+      </button>
+    `).join('');
+  }
 
   function renderProducts() {
-    const grid = document.getElementById('product-grid');
-    document.getElementById('product-count').textContent = `(${currentProducts.length})`;
-
-    grid.innerHTML = currentProducts.map(p => {
+    const list = getFiltered();
+    document.getElementById('product-count').textContent = `(${list.length})`;
+    document.getElementById('product-grid').innerHTML = list.map(p => {
       const name = lang === 'ka' ? p.nameKa : p.nameEn;
-      const spec = lang === 'ka' ? p.specKa : p.specEn;
       const orderLabel = lang === 'ka' ? 'შეკვეთა' : 'Order';
       return `
         <div class="card">
           <div class="card-img">
-            ${p.isNew ? `<span class="badge badge-new">${lang === 'ka' ? 'სიახლე' : 'New'}</span>` : ''}
             ${p.isSale ? `<span class="badge badge-sale">${lang === 'ka' ? 'ფასდაკლება' : 'Sale'}</span>` : ''}
-            <span class="placeholder">${p.emoji}</span>
-            <!-- swap placeholder for: <img src="images/product-${p.id}.jpg" alt="${name}" /> -->
+            <img src="images/product-${p.id}.jpg" alt="${name}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+            <span class="placeholder" style="display:none">${p.emoji}</span>
           </div>
           <div class="card-body">
             <div class="card-name">${name}</div>
-            <div class="card-spec">${spec}</div>
             <div class="card-bottom">
               <div class="card-price">
                 ${p.oldPrice ? `<span class="old-price">₾${p.oldPrice}</span>` : ''}
@@ -686,11 +684,14 @@
     }).join('');
   }
 
+  function setCategory(cat) {
+    activeCat = cat;
+    renderCategories();
+    renderProducts();
+  }
+
   function sortProducts(val) {
-    if (val === 'price-asc')  currentProducts = [...products].sort((a,b) => a.price - b.price);
-    else if (val === 'price-desc') currentProducts = [...products].sort((a,b) => b.price - a.price);
-    else if (val === 'new')   currentProducts = [...products].filter(p => p.isNew).concat([...products].filter(p => !p.isNew));
-    else currentProducts = [...products];
+    sortVal = val;
     renderProducts();
   }
 
@@ -701,9 +702,7 @@
     document.querySelectorAll('[data-ka]').forEach(el => {
       el.innerHTML = el.getAttribute('data-' + l);
     });
-    document.querySelectorAll('#sort-select option').forEach(opt => {
-      opt.textContent = opt.getAttribute('data-' + l) || opt.textContent;
-    });
+    renderCategories();
     renderProducts();
   }
 
@@ -712,6 +711,7 @@
     const name = lang === 'ka' ? p.nameKa : p.nameEn;
     const msg = encodeURIComponent(`გამარჯობა! მინდა შევუკვეთო: ${p.nameKa} (₾${p.price})`);
     document.getElementById('modal-title').textContent = (lang === 'ka' ? 'შეკვეთა: ' : 'Order: ') + name;
+    document.getElementById('modal-desc').textContent = lang === 'ka' ? 'აირჩიეთ შეკვეთის გზა:' : 'Choose how to order:';
     document.getElementById('modal-wa').href  = `https://wa.me/${PHONE}?text=${msg}`;
     document.getElementById('modal-vib').href = `viber://chat?number=${PHONE}&text=${msg}`;
     document.getElementById('modal').classList.add('open');
@@ -723,6 +723,7 @@
     }
   }
 
+  renderCategories();
   renderProducts();
 </script>
 </body>
