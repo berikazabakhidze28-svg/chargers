@@ -1,269 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChargerX – Car Chargers & Adapters</title>
+  <title>ChargerX – მანქანის დამტენები და ადაპტერები</title>
+  <link href="https://fonts.googleapis.com/css2?family=FiraGO:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --bg: #0d0d0d;
-      --surface: #1a1a1a;
-      --card: #222;
-      --accent: #f5a623;
-      --accent2: #ff6b35;
-      --text: #f0f0f0;
-      --muted: #888;
-      --border: #333;
-    }
-
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      font-family: 'FiraGO', 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
     }
 
-    /* ── HEADER ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(13,13,13,0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 5%;
+    /* ── HEADER BAR ── */
+    .logo-banner {
+      background: #000;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
+      padding: 10px 5%;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
     }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      color: var(--text);
+    .logo-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .logo span { color: var(--accent); }
+    .logo-icon {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      background: linear-gradient(135deg, #00c6ff 0%, #39ff14 50%, #f5c518 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .logo-wordmark {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1;
+    }
+    .logo-main {
+      font-size: clamp(1.2rem, 3.5vw, 1.9rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .logo-main span {
+      background: linear-gradient(135deg, #00c6ff, #39ff14, #f5c518);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-sub {
+      font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+      color: #00bfff;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-top: 1px;
+    }
+    .logo-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .lang-toggle {
       display: flex;
-      gap: 6px;
+      gap: 4px;
     }
     .lang-toggle button {
       background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
+      border: 1px solid #ddd;
+      color: #666;
       padding: 4px 12px;
-      border-radius: 20px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.2s;
+      font-size: 0.78rem;
+      font-family: inherit;
+      transition: all 0.15s;
     }
     .lang-toggle button.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
       font-weight: 700;
     }
 
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 80px 5% 60px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(245,166,35,0.12) 0%, transparent 70%);
+    .header-contact {
+      display: flex;
+      gap: 8px;
     }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(245,166,35,0.15);
-      border: 1px solid rgba(245,166,35,0.3);
-      color: var(--accent);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 5px 16px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 16px;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
-    .hero p {
-      color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 520px;
-      margin: 0 auto 36px;
-    }
-    .hero-cta {
-      display: inline-flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .btn {
+    .btn-sm {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 13px 26px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.95rem;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
       cursor: pointer;
       border: none;
       text-decoration: none;
-      transition: transform 0.15s, opacity 0.15s;
+      transition: opacity 0.15s;
+      font-family: inherit;
     }
-    .btn:hover { transform: translateY(-2px); opacity: 0.92; }
+    .btn-sm:hover { opacity: 0.85; }
     .btn-wa  { background: #25d366; color: #fff; }
     .btn-vib { background: #7360f2; color: #fff; }
-    .btn-outline {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text);
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      color: #fff;
+      padding: 52px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: '⚡';
+      position: absolute;
+      font-size: 300px;
+      right: 5%;
+      opacity: 0.03;
+      line-height: 1;
+    }
+    .hero-text { max-width: 560px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(37,211,102,0.15);
+      border: 1px solid rgba(37,211,102,0.3);
+      color: #25d366;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: #f5c518;
+    }
+    .hero p {
+      color: #aaa;
+      font-size: 1rem;
+      margin-bottom: 28px;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-hero:hover { transform: translateY(-2px); opacity: 0.9; }
+
+    /* ── SHOP SECTION ── */
+    .shop { padding: 40px 5%; }
+
+    .shop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .shop-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+    .shop-title span {
+      color: #888;
+      font-size: 0.9rem;
+      font-weight: 400;
+      margin-left: 8px;
     }
 
-    /* ── PRODUCTS ── */
-    .section { padding: 60px 5%; }
-    .section-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    .section-sub {
-      color: var(--muted);
-      margin-bottom: 36px;
+    .shop-sort select {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: #333;
+      background: #fff;
+      cursor: pointer;
+      outline: none;
     }
 
+    /* ── PRODUCT GRID ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 20px;
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      background: #fff;
+      border-radius: 12px;
       overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
+      border: 1px solid #e8e8e8;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
     }
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      transform: translateY(-3px);
     }
 
     .card-img {
       width: 100%;
-      aspect-ratio: 4/3;
-      background: #2a2a2a;
+      aspect-ratio: 1 / 1;
+      background: #f9f9f9;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3.5rem;
+      font-size: 4rem;
+      border-bottom: 1px solid #f0f0f0;
       position: relative;
       overflow: hidden;
     }
     .card-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      display: none; /* shown when src is set */
+      object-fit: contain;
+      padding: 20px;
     }
-    .card-img .placeholder-icon {
-      opacity: 0.35;
-    }
-    .card-img .badge-new {
+    .card-img .placeholder { opacity: 0.25; }
+
+    .badge {
       position: absolute;
       top: 10px;
       left: 10px;
-      background: var(--accent);
-      color: #000;
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       padding: 3px 9px;
-      border-radius: 6px;
+      border-radius: 4px;
+    }
+    .badge-new  { background: #f5c518; color: #000; }
+    .badge-sale { background: #e53935; color: #fff; }
+
+    .card-body { padding: 14px 16px 16px; }
+
+    .card-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+      line-height: 1.35;
+      min-height: 40px;
     }
 
-    .card-body { padding: 16px; }
-    .card-name {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 4px;
+    .card-spec {
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 12px;
     }
-    .card-desc {
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-bottom: 14px;
-      min-height: 36px;
-    }
-    .card-footer {
+
+    .card-bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
+
     .card-price {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      color: var(--accent);
+      color: #1a1a1a;
     }
-    .card-price small {
-      font-size: 0.7rem;
-      color: var(--muted);
+    .card-price .currency {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #666;
+      margin-left: 2px;
+    }
+    .card-price .old-price {
+      font-size: 0.78rem;
+      color: #aaa;
+      text-decoration: line-through;
       font-weight: 400;
+      display: block;
+      line-height: 1;
     }
+
     .card-order {
-      background: var(--accent);
-      color: #000;
+      background: #1a1a1a;
+      color: #fff;
       border: none;
-      padding: 8px 16px;
+      padding: 9px 16px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .card-order:hover { background: #333; }
+
+    /* ── FEATURES STRIP ── */
+    .features {
+      background: #fff;
+      border-top: 1px solid #e8e8e8;
+      border-bottom: 1px solid #e8e8e8;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 40px 0 0;
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 36px;
+      border-right: 1px solid #e8e8e8;
+      flex: 1;
+      min-width: 200px;
+    }
+    .feature:last-child { border-right: none; }
+    .feature-icon { font-size: 1.6rem; }
+    .feature-text strong { display: block; font-size: 0.88rem; font-weight: 700; }
+    .feature-text span   { font-size: 0.75rem; color: #888; }
+
+    /* ── CONTACT SECTION ── */
+    .contact {
+      background: #0a0a0a;
+      color: #fff;
+      text-align: center;
+      padding: 52px 5%;
+    }
+    .contact h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+    .contact p  { color: #888; margin-bottom: 28px; }
+    .contact-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: opacity 0.2s;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+      transition: transform 0.15s, opacity 0.15s;
     }
-    .card-order:hover { opacity: 0.85; }
-
-    /* ── CONTACT STRIP ── */
-    .contact-strip {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 48px 5%;
-      text-align: center;
-    }
-    .contact-strip h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
-    .contact-strip p  { color: var(--muted); margin-bottom: 28px; }
-    .contact-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-contact:hover { transform: translateY(-2px); opacity: 0.9; }
 
     /* ── FOOTER ── */
     footer {
-      padding: 28px 5%;
+      background: #111;
+      color: #555;
       text-align: center;
-      color: var(--muted);
-      font-size: 0.82rem;
-      border-top: 1px solid var(--border);
+      padding: 20px 5%;
+      font-size: 0.8rem;
+      border-top: 1px solid #222;
     }
-    footer a { color: var(--accent); text-decoration: none; }
+    footer a { color: #777; text-decoration: none; }
 
     /* ── ORDER MODAL ── */
     .overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.55);
       z-index: 200;
       align-items: center;
       justify-content: center;
@@ -271,93 +417,132 @@
     }
     .overlay.open { display: flex; }
     .modal {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: #fff;
       border-radius: 16px;
       padding: 32px;
-      max-width: 420px;
+      max-width: 400px;
       width: 100%;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.2);
     }
-    .modal h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; }
-    .modal p  { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
-    .modal-btns { display: flex; flex-direction: column; gap: 12px; }
+    .modal h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1a1a1a;
+    }
+    .modal p  { color: #777; font-size: 0.88rem; margin-bottom: 22px; }
+    .modal-btns { display: flex; flex-direction: column; gap: 10px; }
     .modal-close {
       background: none;
       border: none;
-      color: var(--muted);
+      color: #aaa;
       font-size: 0.82rem;
       cursor: pointer;
       margin-top: 14px;
       text-decoration: underline;
+      font-family: inherit;
     }
 
-    @media (max-width: 480px) {
-      .hero h1 { font-size: 1.8rem; }
-      .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .card-body { padding: 12px; }
-      .card-name { font-size: 0.88rem; }
+    @media (max-width: 600px) {
+      .hero { padding: 36px 5%; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .card-body { padding: 10px 12px 12px; }
+      .card-name { font-size: 0.82rem; min-height: 36px; }
+      .card-price { font-size: 1.05rem; }
+      .card-order { padding: 8px 10px; font-size: 0.75rem; }
+      .feature { padding: 16px 20px; }
+      .logo-banner { padding: 8px 4%; }
+      .btn-sm { padding: 6px 10px; font-size: 0.72rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="logo">Charger<span>X</span></div>
-  <div class="lang-toggle">
-    <button class="active" onclick="setLang('en')">EN</button>
-    <button onclick="setLang('ka')">ქა</button>
+<!-- SINGLE HEADER BAR -->
+<div class="logo-banner">
+  <div class="logo-left">
+    <img src="logo.png" alt="ChargerX" style="height:54px;width:auto;display:block;" />
   </div>
-</header>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge" data-en="Free delivery in Tbilisi" data-ka="უფასო მიწოდება თბილისში">
-    Free delivery in Tbilisi
-  </div>
-  <h1 data-en="Car Chargers &amp;<br><em>Adapters</em> You Can Trust"
-      data-ka="მანქანის დამტენები &amp;<br><em>ადაპტერები</em> რომლებსაც ენდობი">
-    Car Chargers &amp;<br><em>Adapters</em> You Can Trust
-  </h1>
-  <p data-en="Quality charging accessories for every car and device. Fast, safe, and reliable."
-     data-ka="ხარისხიანი სამუხრუჭე აქსესუარები ყველა მანქანისა და მოწყობილობისთვის.">
-    Quality charging accessories for every car and device. Fast, safe, and reliable.
-  </p>
-  <div class="hero-cta">
-    <a class="btn btn-wa" href="https://wa.me/995XXXXXXXXX" target="_blank">
-      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+  <div class="logo-right">
+    <a class="btn-sm btn-wa" href="https://wa.me/995551546446" target="_blank">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
       WhatsApp
     </a>
-    <a class="btn btn-vib" href="viber://chat?number=995XXXXXXXXX" target="_blank">
-      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
+    <a class="btn-sm btn-vib" href="viber://chat?number=995551546446" target="_blank">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
       Viber
     </a>
+    <div class="lang-toggle">
+      <button class="active" onclick="setLang('ka')">ქა</button>
+      <button onclick="setLang('en')">EN</button>
+    </div>
   </div>
-</section>
+</div>
 
-<!-- PRODUCTS -->
-<section class="section">
-  <div class="section-title" data-en="Our Products" data-ka="ჩვენი პროდუქტები">Our Products</div>
-  <div class="section-sub" data-en="Click &ldquo;Order&rdquo; to contact us directly about any item."
-       data-ka="დააჭირეთ &ldquo;შეკვეთა&rdquo; ნებისმიერ პროდუქტზე დასაკავშირებლად.">
-    Click &ldquo;Order&rdquo; to contact us directly about any item.
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">🚗</div>
+    <div class="feature-text">
+      <strong data-ka="უფასო მიწოდება" data-en="Free Delivery">უფასო მიწოდება</strong>
+      <span data-ka="თბილისში" data-en="In Tbilisi">თბილისში</span>
+    </div>
   </div>
+  <div class="feature">
+    <div class="feature-icon">⚡</div>
+    <div class="feature-text">
+      <strong data-ka="სწრაფი დატენვა" data-en="Fast Charging">სწრაფი დატენვა</strong>
+      <span data-ka="QC 3.0 / PD 20W" data-en="QC 3.0 / PD 20W">QC 3.0 / PD 20W</span>
+    </div>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">✅</div>
+    <div class="feature-text">
+      <strong data-ka="ხარისხის გარანტია" data-en="Quality Guarantee">ხარისხის გარანტია</strong>
+      <span data-ka="სერტიფიცირებული პროდუქცია" data-en="Certified products">სერტიფიცირებული პროდუქცია</span>
+    </div>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">💬</div>
+    <div class="feature-text">
+      <strong data-ka="სწრაფი პასუხი" data-en="Quick Response">სწრაფი პასუხი</strong>
+      <span data-ka="WhatsApp & Viber" data-en="WhatsApp & Viber">WhatsApp & Viber</span>
+    </div>
+  </div>
+</div>
 
+<!-- SHOP -->
+<section class="shop">
+  <div class="shop-header">
+    <div class="shop-title">
+      <span data-ka="პროდუქტები" data-en="Products">პროდუქტები</span>
+      <span id="product-count"></span>
+    </div>
+    <div class="shop-sort">
+      <select id="sort-select" onchange="sortProducts(this.value)">
+        <option value="default" data-ka="ნაგულისხმევი" data-en="Default">ნაგულისხმევი</option>
+        <option value="price-asc" data-ka="ფასი: იაფიდან ძვირამდე" data-en="Price: Low to High">ფასი: იაფიდან ძვირამდე</option>
+        <option value="price-desc" data-ka="ფასი: ძვირიდან იაფამდე" data-en="Price: High to Low">ფასი: ძვირიდან იაფამდე</option>
+        <option value="new" data-ka="სიახლე" data-en="New Arrivals">სიახლე</option>
+      </select>
+    </div>
+  </div>
   <div class="grid" id="product-grid"></div>
 </section>
 
-<!-- CONTACT STRIP -->
-<section class="contact-strip">
-  <h2 data-en="Have a question?" data-ka="გაქვთ კითხვა?">Have a question?</h2>
-  <p data-en="We reply fast. Message us on WhatsApp or Viber."
-     data-ka="ჩვენ სწრაფად ვპასუხობთ. დაგვიკავშირდით WhatsApp-ზე ან Viber-ზე.">
-    We reply fast. Message us on WhatsApp or Viber.
+<!-- CONTACT -->
+<section class="contact">
+  <h2 data-ka="გაქვთ კითხვა?" data-en="Have a question?">გაქვთ კითხვა?</h2>
+  <p data-ka="სწრაფად ვპასუხობთ — დაგვიკავშირდით WhatsApp-ზე ან Viber-ზე."
+     data-en="We reply fast — message us on WhatsApp or Viber.">
+    სწრაფად ვპასუხობთ — დაგვიკავშირდით WhatsApp-ზე ან Viber-ზე.
   </p>
   <div class="contact-btns">
-    <a class="btn btn-wa" href="https://wa.me/995XXXXXXXXX" target="_blank">
+    <a class="btn-contact btn-wa" href="https://wa.me/995551546446" target="_blank">
       WhatsApp
     </a>
-    <a class="btn btn-vib" href="viber://chat?number=995XXXXXXXXX" target="_blank">
+    <a class="btn-contact btn-vib" href="viber://chat?number=995551546446" target="_blank">
       Viber
     </a>
   </div>
@@ -371,138 +556,162 @@
 <!-- ORDER MODAL -->
 <div class="overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
-    <h3 id="modal-title">Order</h3>
-    <p id="modal-desc" data-en="Choose how you'd like to place your order:"
-       data-ka="აირჩიეთ შეკვეთის გზა:">Choose how you'd like to place your order:</p>
+    <h3 id="modal-title">შეკვეთა</h3>
+    <p id="modal-desc">აირჩიეთ შეკვეთის გზა:</p>
     <div class="modal-btns">
-      <a class="btn btn-wa" id="modal-wa" href="#" target="_blank">
+      <a class="btn-contact btn-wa" id="modal-wa" href="#" target="_blank">
         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
-        Order on WhatsApp
+        WhatsApp-ით შეკვეთა
       </a>
-      <a class="btn btn-vib" id="modal-vib" href="#" target="_blank">
+      <a class="btn-contact btn-vib" id="modal-vib" href="#" target="_blank">
         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
-        Order on Viber
+        Viber-ით შეკვეთა
       </a>
     </div>
     <button class="modal-close" onclick="closeModal()"
-            data-en="Cancel" data-ka="გაუქმება">Cancel</button>
+            data-ka="გაუქმება" data-en="Cancel">გაუქმება</button>
   </div>
 </div>
 
 <script>
-  // ── PHONE NUMBER — change this one place ──
-  const PHONE = '995XXXXXXXXX'; // e.g. 995599123456
+  const PHONE = '995551546446';
 
-  // ── PRODUCTS — edit name/nameKa/desc/descKa/price/emoji/isNew ──
   const products = [
     {
       id: 1,
-      name: 'Single USB Car Charger',
-      nameKa: 'ერთი USB მანქანის დამტენი',
-      desc: '5V/2.4A, universal fit, compact design',
-      descKa: '5V/2.4A, უნივერსალური, კომპაქტური',
-      price: '9',
+      nameKa: 'USB მანქანის დამტენი',
+      nameEn: 'Single USB Car Charger',
+      specKa: '5V / 2.4A · უნივერსალური',
+      specEn: '5V / 2.4A · Universal fit',
+      price: 9,
+      oldPrice: null,
       emoji: '🔌',
       isNew: false,
+      isSale: false,
     },
     {
       id: 2,
-      name: 'Dual USB Car Charger',
       nameKa: 'ორმაგი USB მანქანის დამტენი',
-      desc: 'Two USB ports, 3.4A total, charges two devices',
-      descKa: 'ორი USB პორტი, 3.4A, ორი მოწყობილობა ერთდროულად',
-      price: '14',
+      nameEn: 'Dual USB Car Charger',
+      specKa: '3.4A სულ · ორი პორტი',
+      specEn: '3.4A total · Two ports',
+      price: 14,
+      oldPrice: 18,
       emoji: '⚡',
       isNew: false,
+      isSale: true,
     },
     {
       id: 3,
-      name: 'USB-C Car Charger 20W',
       nameKa: 'USB-C მანქანის დამტენი 20W',
-      desc: 'Power Delivery 20W, fast charges iPhones & Android',
-      descKa: 'Power Delivery 20W, სწრაფი დატენვა iPhone და Android',
-      price: '19',
+      nameEn: 'USB-C Car Charger 20W',
+      specKa: 'Power Delivery 20W · iPhone & Android',
+      specEn: 'Power Delivery 20W · iPhone & Android',
+      price: 19,
+      oldPrice: null,
       emoji: '🚀',
       isNew: true,
+      isSale: false,
     },
     {
       id: 4,
-      name: 'Quick Charge 3.0 Charger',
       nameKa: 'სწრაფი დამტენი QC 3.0',
-      desc: 'Qualcomm QC 3.0, up to 4× faster than standard',
-      descKa: 'Qualcomm QC 3.0, სტანდარტზე 4-ჯერ სწრაფი',
-      price: '22',
+      nameEn: 'Quick Charge 3.0 Charger',
+      specKa: 'Qualcomm QC 3.0 · 4× სწრაფი',
+      specEn: 'Qualcomm QC 3.0 · 4× faster',
+      price: 22,
+      oldPrice: 28,
       emoji: '⚡',
       isNew: true,
+      isSale: true,
     },
     {
       id: 5,
-      name: 'USB-A to USB-C Cable 1m',
       nameKa: 'USB-A → USB-C კაბელი 1მ',
-      desc: 'Braided nylon, fast data & charging, 1 metre',
-      descKa: 'ნეილონი, სწრაფი მონაცემები და დატენვა, 1 მეტრი',
-      price: '8',
+      nameEn: 'USB-A to USB-C Cable 1m',
+      specKa: 'გრეხილი ნეილონი · სწრაფი დატენვა',
+      specEn: 'Braided nylon · Fast charging',
+      price: 8,
+      oldPrice: null,
       emoji: '🔗',
       isNew: false,
+      isSale: false,
     },
     {
       id: 6,
-      name: 'Universal Travel Adapter',
-      nameKa: 'უნივერსალური სამგზავრო ადაპტერი',
-      desc: 'EU/UK/US/AU plugs, with 2 USB ports',
-      descKa: 'EU/UK/US/AU სადენი, 2 USB პორტი',
-      price: '25',
+      nameKa: 'უნივერსალური ადაპტერი',
+      nameEn: 'Universal Travel Adapter',
+      specKa: 'EU/UK/US/AU · 2 USB პორტი',
+      specEn: 'EU/UK/US/AU · 2 USB ports',
+      price: 25,
+      oldPrice: null,
       emoji: '🌍',
       isNew: false,
+      isSale: false,
     },
   ];
 
-  // ── STATE ──
-  let lang = 'en';
+  let lang = 'ka';
+  let currentProducts = [...products];
 
-  // ── RENDER PRODUCTS ──
   function renderProducts() {
     const grid = document.getElementById('product-grid');
-    grid.innerHTML = products.map(p => `
-      <div class="card">
-        <div class="card-img">
-          ${p.isNew ? '<span class="badge-new">New</span>' : ''}
-          <span class="placeholder-icon">${p.emoji}</span>
-          <!-- replace the line below with: <img src="images/product-${p.id}.jpg" alt="${p.name}" /> -->
-        </div>
-        <div class="card-body">
-          <div class="card-name">${lang === 'en' ? p.name : p.nameKa}</div>
-          <div class="card-desc">${lang === 'en' ? p.desc : p.descKa}</div>
-          <div class="card-footer">
-            <div class="card-price">₾${p.price} <small>GEL</small></div>
-            <button class="card-order" onclick="openModal(${p.id})"
-              data-en="Order" data-ka="შეკვეთა">
-              ${lang === 'en' ? 'Order' : 'შეკვეთა'}
-            </button>
+    document.getElementById('product-count').textContent = `(${currentProducts.length})`;
+
+    grid.innerHTML = currentProducts.map(p => {
+      const name = lang === 'ka' ? p.nameKa : p.nameEn;
+      const spec = lang === 'ka' ? p.specKa : p.specEn;
+      const orderLabel = lang === 'ka' ? 'შეკვეთა' : 'Order';
+      return `
+        <div class="card">
+          <div class="card-img">
+            ${p.isNew ? `<span class="badge badge-new">${lang === 'ka' ? 'სიახლე' : 'New'}</span>` : ''}
+            ${p.isSale ? `<span class="badge badge-sale">${lang === 'ka' ? 'ფასდაკლება' : 'Sale'}</span>` : ''}
+            <span class="placeholder">${p.emoji}</span>
+            <!-- swap placeholder for: <img src="images/product-${p.id}.jpg" alt="${name}" /> -->
+          </div>
+          <div class="card-body">
+            <div class="card-name">${name}</div>
+            <div class="card-spec">${spec}</div>
+            <div class="card-bottom">
+              <div class="card-price">
+                ${p.oldPrice ? `<span class="old-price">₾${p.oldPrice}</span>` : ''}
+                ₾${p.price}<span class="currency">GEL</span>
+              </div>
+              <button class="card-order" onclick="openModal(${p.id})">${orderLabel}</button>
+            </div>
           </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
-  // ── LANGUAGE ──
+  function sortProducts(val) {
+    if (val === 'price-asc')  currentProducts = [...products].sort((a,b) => a.price - b.price);
+    else if (val === 'price-desc') currentProducts = [...products].sort((a,b) => b.price - a.price);
+    else if (val === 'new')   currentProducts = [...products].filter(p => p.isNew).concat([...products].filter(p => !p.isNew));
+    else currentProducts = [...products];
+    renderProducts();
+  }
+
   function setLang(l) {
     lang = l;
     document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.lang-toggle button:${l === 'en' ? 'first-child' : 'last-child'}`).classList.add('active');
-    document.querySelectorAll('[data-en]').forEach(el => {
+    document.querySelector(`.lang-toggle button:${l === 'ka' ? 'first-child' : 'last-child'}`).classList.add('active');
+    document.querySelectorAll('[data-ka]').forEach(el => {
       el.innerHTML = el.getAttribute('data-' + l);
+    });
+    document.querySelectorAll('#sort-select option').forEach(opt => {
+      opt.textContent = opt.getAttribute('data-' + l) || opt.textContent;
     });
     renderProducts();
   }
 
-  // ── MODAL ──
   function openModal(productId) {
     const p = products.find(x => x.id === productId);
-    const name = lang === 'en' ? p.name : p.nameKa;
-    const msg = encodeURIComponent(`Hi! I'd like to order: ${p.name} (₾${p.price})`);
-    document.getElementById('modal-title').textContent = lang === 'en'
-      ? `Order: ${name}` : `შეკვეთა: ${name}`;
+    const name = lang === 'ka' ? p.nameKa : p.nameEn;
+    const msg = encodeURIComponent(`გამარჯობა! მინდა შევუკვეთო: ${p.nameKa} (₾${p.price})`);
+    document.getElementById('modal-title').textContent = (lang === 'ka' ? 'შეკვეთა: ' : 'Order: ') + name;
     document.getElementById('modal-wa').href  = `https://wa.me/${PHONE}?text=${msg}`;
     document.getElementById('modal-vib').href = `viber://chat?number=${PHONE}&text=${msg}`;
     document.getElementById('modal').classList.add('open');
@@ -514,7 +723,6 @@
     }
   }
 
-  // ── INIT ──
   renderProducts();
 </script>
 </body>
