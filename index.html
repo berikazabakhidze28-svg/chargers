@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChargerX – Car Chargers & Adapters</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --card: #222;
+      --accent: #f5a623;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #888;
+      --border: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,13,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+
+    .lang-toggle {
+      display: flex;
+      gap: 6px;
+    }
+    .lang-toggle button {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .lang-toggle button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 80px 5% 60px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(245,166,35,0.12) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.15);
+      border: 1px solid rgba(245,166,35,0.3);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); opacity: 0.92; }
+    .btn-wa  { background: #25d366; color: #fff; }
+    .btn-vib { background: #7360f2; color: #fff; }
+    .btn-outline {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* ── PRODUCTS ── */
+    .section { padding: 60px 5%; }
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none; /* shown when src is set */
+    }
+    .card-img .placeholder-icon {
+      opacity: 0.35;
+    }
+    .card-img .badge-new {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .card-body { padding: 16px; }
+    .card-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+      min-height: 36px;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .card-price small {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .card-order {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .card-order:hover { opacity: 0.85; }
+
+    /* ── CONTACT STRIP ── */
+    .contact-strip {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 5%;
+      text-align: center;
+    }
+    .contact-strip h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .contact-strip p  { color: var(--muted); margin-bottom: 28px; }
+    .contact-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 28px 5%;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── ORDER MODAL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 420px;
+      width: 100%;
+    }
+    .modal h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; }
+    .modal p  { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
+    .modal-btns { display: flex; flex-direction: column; gap: 12px; }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      margin-top: 14px;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.8rem; }
+      .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .card-body { padding: 12px; }
+      .card-name { font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Charger<span>X</span></div>
+  <div class="lang-toggle">
+    <button class="active" onclick="setLang('en')">EN</button>
+    <button onclick="setLang('ka')">ქა</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge" data-en="Free delivery in Tbilisi" data-ka="უფასო მიწოდება თბილისში">
+    Free delivery in Tbilisi
+  </div>
+  <h1 data-en="Car Chargers &amp;<br><em>Adapters</em> You Can Trust"
+      data-ka="მანქანის დამტენები &amp;<br><em>ადაპტერები</em> რომლებსაც ენდობი">
+    Car Chargers &amp;<br><em>Adapters</em> You Can Trust
+  </h1>
+  <p data-en="Quality charging accessories for every car and device. Fast, safe, and reliable."
+     data-ka="ხარისხიანი სამუხრუჭე აქსესუარები ყველა მანქანისა და მოწყობილობისთვის.">
+    Quality charging accessories for every car and device. Fast, safe, and reliable.
+  </p>
+  <div class="hero-cta">
+    <a class="btn btn-wa" href="https://wa.me/995XXXXXXXXX" target="_blank">
+      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+      WhatsApp
+    </a>
+    <a class="btn btn-vib" href="viber://chat?number=995XXXXXXXXX" target="_blank">
+      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
+      Viber
+    </a>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section">
+  <div class="section-title" data-en="Our Products" data-ka="ჩვენი პროდუქტები">Our Products</div>
+  <div class="section-sub" data-en="Click &ldquo;Order&rdquo; to contact us directly about any item."
+       data-ka="დააჭირეთ &ldquo;შეკვეთა&rdquo; ნებისმიერ პროდუქტზე დასაკავშირებლად.">
+    Click &ldquo;Order&rdquo; to contact us directly about any item.
+  </div>
+
+  <div class="grid" id="product-grid"></div>
+</section>
+
+<!-- CONTACT STRIP -->
+<section class="contact-strip">
+  <h2 data-en="Have a question?" data-ka="გაქვთ კითხვა?">Have a question?</h2>
+  <p data-en="We reply fast. Message us on WhatsApp or Viber."
+     data-ka="ჩვენ სწრაფად ვპასუხობთ. დაგვიკავშირდით WhatsApp-ზე ან Viber-ზე.">
+    We reply fast. Message us on WhatsApp or Viber.
+  </p>
+  <div class="contact-btns">
+    <a class="btn btn-wa" href="https://wa.me/995XXXXXXXXX" target="_blank">
+      WhatsApp
+    </a>
+    <a class="btn btn-vib" href="viber://chat?number=995XXXXXXXXX" target="_blank">
+      Viber
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 ChargerX &middot; <a href="mailto:info@chargerx.ge">info@chargerx.ge</a> &middot; chargerx.ge</p>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <h3 id="modal-title">Order</h3>
+    <p id="modal-desc" data-en="Choose how you'd like to place your order:"
+       data-ka="აირჩიეთ შეკვეთის გზა:">Choose how you'd like to place your order:</p>
+    <div class="modal-btns">
+      <a class="btn btn-wa" id="modal-wa" href="#" target="_blank">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+        Order on WhatsApp
+      </a>
+      <a class="btn btn-vib" id="modal-vib" href="#" target="_blank">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
+        Order on Viber
+      </a>
+    </div>
+    <button class="modal-close" onclick="closeModal()"
+            data-en="Cancel" data-ka="გაუქმება">Cancel</button>
+  </div>
+</div>
+
+<script>
+  // ── PHONE NUMBER — change this one place ──
+  const PHONE = '995XXXXXXXXX'; // e.g. 995599123456
+
+  // ── PRODUCTS — edit name/nameKa/desc/descKa/price/emoji/isNew ──
+  const products = [
+    {
+      id: 1,
+      name: 'Single USB Car Charger',
+      nameKa: 'ერთი USB მანქანის დამტენი',
+      desc: '5V/2.4A, universal fit, compact design',
+      descKa: '5V/2.4A, უნივერსალური, კომპაქტური',
+      price: '9',
+      emoji: '🔌',
+      isNew: false,
+    },
+    {
+      id: 2,
+      name: 'Dual USB Car Charger',
+      nameKa: 'ორმაგი USB მანქანის დამტენი',
+      desc: 'Two USB ports, 3.4A total, charges two devices',
+      descKa: 'ორი USB პორტი, 3.4A, ორი მოწყობილობა ერთდროულად',
+      price: '14',
+      emoji: '⚡',
+      isNew: false,
+    },
+    {
+      id: 3,
+      name: 'USB-C Car Charger 20W',
+      nameKa: 'USB-C მანქანის დამტენი 20W',
+      desc: 'Power Delivery 20W, fast charges iPhones & Android',
+      descKa: 'Power Delivery 20W, სწრაფი დატენვა iPhone და Android',
+      price: '19',
+      emoji: '🚀',
+      isNew: true,
+    },
+    {
+      id: 4,
+      name: 'Quick Charge 3.0 Charger',
+      nameKa: 'სწრაფი დამტენი QC 3.0',
+      desc: 'Qualcomm QC 3.0, up to 4× faster than standard',
+      descKa: 'Qualcomm QC 3.0, სტანდარტზე 4-ჯერ სწრაფი',
+      price: '22',
+      emoji: '⚡',
+      isNew: true,
+    },
+    {
+      id: 5,
+      name: 'USB-A to USB-C Cable 1m',
+      nameKa: 'USB-A → USB-C კაბელი 1მ',
+      desc: 'Braided nylon, fast data & charging, 1 metre',
+      descKa: 'ნეილონი, სწრაფი მონაცემები და დატენვა, 1 მეტრი',
+      price: '8',
+      emoji: '🔗',
+      isNew: false,
+    },
+    {
+      id: 6,
+      name: 'Universal Travel Adapter',
+      nameKa: 'უნივერსალური სამგზავრო ადაპტერი',
+      desc: 'EU/UK/US/AU plugs, with 2 USB ports',
+      descKa: 'EU/UK/US/AU სადენი, 2 USB პორტი',
+      price: '25',
+      emoji: '🌍',
+      isNew: false,
+    },
+  ];
+
+  // ── STATE ──
+  let lang = 'en';
+
+  // ── RENDER PRODUCTS ──
+  function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = products.map(p => `
+      <div class="card">
+        <div class="card-img">
+          ${p.isNew ? '<span class="badge-new">New</span>' : ''}
+          <span class="placeholder-icon">${p.emoji}</span>
+          <!-- replace the line below with: <img src="images/product-${p.id}.jpg" alt="${p.name}" /> -->
+        </div>
+        <div class="card-body">
+          <div class="card-name">${lang === 'en' ? p.name : p.nameKa}</div>
+          <div class="card-desc">${lang === 'en' ? p.desc : p.descKa}</div>
+          <div class="card-footer">
+            <div class="card-price">₾${p.price} <small>GEL</small></div>
+            <button class="card-order" onclick="openModal(${p.id})"
+              data-en="Order" data-ka="შეკვეთა">
+              ${lang === 'en' ? 'Order' : 'შეკვეთა'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── LANGUAGE ──
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-toggle button:${l === 'en' ? 'first-child' : 'last-child'}`).classList.add('active');
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = el.getAttribute('data-' + l);
+    });
+    renderProducts();
+  }
+
+  // ── MODAL ──
+  function openModal(productId) {
+    const p = products.find(x => x.id === productId);
+    const name = lang === 'en' ? p.name : p.nameKa;
+    const msg = encodeURIComponent(`Hi! I'd like to order: ${p.name} (₾${p.price})`);
+    document.getElementById('modal-title').textContent = lang === 'en'
+      ? `Order: ${name}` : `შეკვეთა: ${name}`;
+    document.getElementById('modal-wa').href  = `https://wa.me/${PHONE}?text=${msg}`;
+    document.getElementById('modal-vib').href = `viber://chat?number=${PHONE}&text=${msg}`;
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('open');
+    }
+  }
+
+  // ── INIT ──
+  renderProducts();
+</script>
+</body>
+</html>
