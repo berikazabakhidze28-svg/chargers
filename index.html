@@ -586,6 +586,26 @@
     /* make card clickable */
     .card { cursor: pointer; }
 
+    /* ── LOGO WATERMARK ── */
+    .logo-watermark {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 38%;
+      max-width: 90px;
+      opacity: 0.09;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      object-fit: contain;
+    }
+    .detail-logo-watermark {
+      max-width: 140px;
+      width: 30%;
+      bottom: 14px;
+      right: 14px;
+      opacity: 0.08;
+    }
+
     @media (max-width: 700px) {
       .detail-body { grid-template-columns: 1fr; gap: 24px; }
       .detail-wrap { padding: 24px 4% 48px; }
@@ -867,6 +887,7 @@
             <img src="images/product-${p.id}.jpg" alt="${name}"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
             <span class="placeholder" style="display:none">${p.emoji}</span>
+            <img class="logo-watermark" src="logo-mark.png" alt="" />
           </div>
           <div class="card-body">
             <div class="card-name">${name}</div>
@@ -945,6 +966,7 @@
            style="width:100%;height:100%;object-fit:contain;padding:24px;"
            onerror="this.style.display='none';document.getElementById('detail-emoji').style.display='block'" />
       <span id="detail-emoji" style="display:none;font-size:5rem">${p.emoji}</span>
+      <img class="logo-watermark detail-logo-watermark" src="logo-mark.png" alt="" />
     `;
 
     document.getElementById('detail-cat').textContent   = catName;
