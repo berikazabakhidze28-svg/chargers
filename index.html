@@ -506,6 +506,7 @@
       justify-content: center;
       font-size: 5rem;
       overflow: hidden;
+      position: relative;
     }
     .detail-img img {
       width: 100%;
@@ -589,21 +590,18 @@
     /* ── LOGO WATERMARK ── */
     .logo-watermark {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 38%;
-      max-width: 90px;
-      opacity: 0.09;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 75%;
+      opacity: 0.25;
       pointer-events: none;
       mix-blend-mode: multiply;
       object-fit: contain;
     }
     .detail-logo-watermark {
-      max-width: 140px;
-      width: 30%;
-      bottom: 14px;
-      right: 14px;
-      opacity: 0.08;
+      width: 75%;
+      opacity: 0.25;
     }
 
     @media (max-width: 700px) {
