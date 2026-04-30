@@ -264,7 +264,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 20px;
     }
     .card-img .placeholder { opacity: 0.25; }
 
@@ -512,7 +511,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 24px;
     }
     .detail-info { padding-top: 8px; }
     .detail-cat {
@@ -961,7 +959,7 @@
     const imgWrap = document.getElementById('detail-img-wrap');
     imgWrap.innerHTML = `
       <img src="images/product-${p.id}.jpg" alt="${name}"
-           style="width:100%;height:100%;object-fit:contain;padding:24px;"
+           style="width:100%;height:100%;object-fit:contain;"
            onerror="this.style.display='none';document.getElementById('detail-emoji').style.display='block'" />
       <span id="detail-emoji" style="display:none;font-size:5rem">${p.emoji}</span>
       <img class="logo-watermark detail-logo-watermark" src="logo-mark.png" alt="" />
