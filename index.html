@@ -469,6 +469,128 @@
     .cat-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
     .cat-btn.active { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
 
+    /* ── DETAIL PAGE ── */
+    #detail-page { display: none; background: #f5f5f5; min-height: 100vh; }
+    .detail-wrap {
+      padding: 36px 5% 60px;
+    }
+    .detail-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #555;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      margin-bottom: 28px;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .detail-back:hover { color: #000; }
+    .detail-body {
+      display: grid;
+      grid-template-columns: 42% 1fr;
+      gap: 52px;
+      align-items: start;
+    }
+    .detail-img {
+      background: #f9f9f9;
+      border-radius: 16px;
+      border: 1px solid #e8e8e8;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      overflow: hidden;
+    }
+    .detail-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 24px;
+    }
+    .detail-info { padding-top: 8px; }
+    .detail-cat {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+    .detail-name {
+      font-size: clamp(1.2rem, 3vw, 1.7rem);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    .detail-price {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .detail-price .old { font-size: 1rem; color: #aaa; text-decoration: line-through; font-weight: 400; margin-right: 8px; }
+    .detail-price .currency { font-size: 1rem; color: #888; font-weight: 500; }
+    .detail-badge { display: inline-block; background: #e53935; color: #fff; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px; margin-bottom: 20px; }
+    .detail-divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    .detail-order-label { font-size: 0.8rem; color: #888; margin-bottom: 12px; font-weight: 600; }
+    .detail-btns { display: flex; flex-direction: column; gap: 10px; }
+    .btn-detail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      font-family: inherit;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-detail:hover { opacity: 0.88; transform: translateY(-1px); }
+    .detail-share {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .detail-share button {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+      color: #444;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .detail-share button:hover { background: #e0e0e0; }
+    .detail-desc {
+      font-size: 0.93rem;
+      color: #555;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    /* make card clickable */
+    .card { cursor: pointer; }
+
+    @media (max-width: 700px) {
+      .detail-body { grid-template-columns: 1fr; gap: 24px; }
+      .detail-wrap { padding: 24px 4% 48px; }
+    }
+
     @media (max-width: 600px) {
       .hero { padding: 36px 5%; }
       .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -584,6 +706,41 @@
   <p>&copy; 2026 ChargerX &middot; <a href="mailto:info@chargerx.ge">info@chargerx.ge</a> &middot; chargerx.ge</p>
 </footer>
 
+<!-- DETAIL PAGE -->
+<div id="detail-page">
+  <div class="detail-wrap">
+    <button class="detail-back" onclick="goBack()">&#8592; <span data-ka="უკან" data-en="Back">უკან</span></button>
+    <div class="detail-body">
+      <div class="detail-img" id="detail-img-wrap">
+        <span id="detail-emoji"></span>
+      </div>
+      <div class="detail-info">
+        <div class="detail-cat" id="detail-cat"></div>
+        <div class="detail-name" id="detail-name"></div>
+        <div id="detail-sale-badge"></div>
+        <div class="detail-price" id="detail-price"></div>
+        <div class="detail-desc" id="detail-desc"></div>
+        <hr class="detail-divider" />
+        <div class="detail-order-label" data-ka="შეუკვეთე პირდაპირ:" data-en="Order directly:">შეუკვეთე პირდაპირ:</div>
+        <div class="detail-btns">
+          <a class="btn-detail btn-wa" id="detail-wa" href="#" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.523 5.854L.057 23.882l6.195-1.624A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.601-.498-5.112-1.367l-.367-.217-3.797.996.988-3.709-.24-.382A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+            <span data-ka="WhatsApp-ით შეკვეთა" data-en="Order on WhatsApp">WhatsApp-ით შეკვეთა</span>
+          </a>
+          <a class="btn-detail btn-vib" id="detail-vib" href="#" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M11.4 0C5.5.1 1.4 4.4 1.3 10.3c-.1 3.1.9 5.9 2.8 8.1L2.4 22l3.8-1.2c2 1.2 4.4 1.9 6.9 1.9h.1c5.8 0 10.3-4.7 10.5-10.6C23.9 5.8 18.7.1 11.4 0zm.1 2c5.3.1 9.3 4.3 9.2 9.8-.1 5.1-4.2 9.1-9.3 9.1h-.1c-2.2 0-4.3-.6-6-1.8l-.4-.3-2.2.7.7-2.1-.3-.4C1.6 15.2.9 12.8 1 10.3 1.1 5.1 5.5.9 11.5 2z"/><path d="M8.5 6c-.3-.1-.5 0-.7.1-.3.2-1.1 1-1.1 2.4 0 1.4 1.1 2.8 1.2 3 .1.1 2.1 3.3 5.1 4.5 2.5 1.1 3 .9 3.6.8.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.5-.3l-1.9-.9c-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.1.2-.3.2-.5.1-.8-.3-1.6-.7-2.2-1.3-.5-.5-1-1.1-1.3-1.8-.1-.2 0-.4.1-.5.2-.2.5-.5.6-.7.2-.2.2-.4.1-.7l-.9-2c-.1-.3-.3-.4-.5-.4l-.8.1z"/></svg>
+            <span data-ka="Viber-ით შეკვეთა" data-en="Order on Viber">Viber-ით შეკვეთა</span>
+          </a>
+        </div>
+        <div class="detail-share">
+          <span data-ka="გააზიარე:" data-en="Share:">გააზიარე:</span>
+          <button onclick="copyLink()" id="copy-btn" data-ka="ლინკის კოპირება" data-en="Copy link">ლინკის კოპირება</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ORDER MODAL -->
 <div class="overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
@@ -609,28 +766,64 @@
 
   const products = [
     // ── კომპლექტი / Bundles ──
-    { id:1,  cat:'bundle',   emoji:'📦', nameKa:'ამერიკული კომპლექტი',                    nameEn:'American Bundle',                         price:800, oldPrice:940,  isSale:true  },
-    { id:2,  cat:'bundle',   emoji:'📦', nameKa:'ტესლას კომპლექტი',                       nameEn:'Tesla Bundle',                            price:800, oldPrice:930,  isSale:true  },
+    { id:1,  cat:'bundle',   emoji:'📦', nameKa:'ამერიკული კომპლექტი',                    nameEn:'American Bundle',                         price:800, oldPrice:940,  isSale:true,
+      descKa:'კომპლექტი მოიცავს ამერიკული სტანდარტის EV დამტენის ადაპტერებს. იდეალურია ამერიკული ელექტრომობილების მფლობელებისთვის საქართველოში — ერთ კომპლექტში ყველა საჭირო ადაპტერი.',
+      descEn:'A complete set of American standard EV charger adapters. Ideal for owners of American electric vehicles in Georgia — all the adapters you need in one bundle.' },
+    { id:2,  cat:'bundle',   emoji:'📦', nameKa:'ტესლას კომპლექტი',                       nameEn:'Tesla Bundle',                            price:800, oldPrice:930,  isSale:true,
+      descKa:'სრული კომპლექტი Tesla-ს მფლობელებისთვის — მოიცავს ყველა საჭირო ადაპტერს სხვადასხვა სადგურსა და სახლის განსხვავებულ დამტენ გადაწყვეტებთან თავსებადობისთვის.',
+      descEn:'Complete bundle for Tesla owners — includes all necessary adapters for compatibility with various charging stations and home charging solutions.' },
     // ── გადამყვანი / Adapters ──
-    { id:3,  cat:'adapter',  emoji:'🔌', nameKa:'FastCharger CCS2 to CCS1',               nameEn:'FastCharger CCS2 to CCS1',                price:300,  oldPrice:380,  isSale:true  },
-    { id:4,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla to Type 1 (J1772)',                nameEn:'Tesla to Type 1 (J1772)',                 price:180,  oldPrice:null, isSale:false },
-    { id:5,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1',                      nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:120,  oldPrice:150,  isSale:true  },
-    { id:6,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 ჩამკეტით',             nameEn:'Type 2 to Type 1 with Locker',            price:170,  oldPrice:null, isSale:false },
-    { id:7,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla FastCharger CCS2 to Tesla (AC+DC)', nameEn:'Tesla FastCharger Adapter CCS2 to Tesla', price:240, oldPrice:null, isSale:false },
-    { id:8,  cat:'adapter',  emoji:'🔌', nameKa:'დამტენის ადაფტერი Type 2 → Tesla',       nameEn:'Charger Adapter Type 2 to Tesla',         price:120,  oldPrice:140,  isSale:true  },
-    { id:9,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 კაბელი',               nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:270,  oldPrice:320,  isSale:true  },
-    { id:10, cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Tesla კაბელი',                nameEn:'Type 2 to Tesla Cable',                   price:340,  oldPrice:440,  isSale:true  },
-    { id:11, cat:'adapter',  emoji:'🔌', nameKa:'nema14-50 დან ევროპულ როზეტზე გადამყვანი', nameEn:'nema14-50 to EU socket Adapter',       price:70,   oldPrice:null, isSale:false },
+    { id:3,  cat:'adapter',  emoji:'🔌', nameKa:'FastCharger CCS2 to CCS1',               nameEn:'FastCharger CCS2 to CCS1',                price:300,  oldPrice:380,  isSale:true,
+      descKa:'DC სწრაფი დამტენის ადაპტერი CCS2-დან CCS1-ზე. ხელს უწყობს CCS1 სტანდარტის მქონე მანქანების სწრაფ დატენვას CCS2 სადგურებზე.',
+      descEn:'DC fast charger adapter from CCS2 to CCS1. Enables CCS1 standard vehicles to fast charge at CCS2 stations.' },
+    { id:4,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla to Type 1 (J1772)',                nameEn:'Tesla to Type 1 (J1772)',                 price:180,  oldPrice:null, isSale:false,
+      descKa:'ადაპტერი Tesla-ს კომპაქტური კონექტორიდან Type 1 (J1772) სტანდარტზე. სახლის ან Level 2 საჯარო სადგურებზე AC დასატენად.',
+      descEn:'Adapter from Tesla compact connector to Type 1 (J1772) standard. For AC charging at home or Level 2 public stations.' },
+    { id:5,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1',                      nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:120,  oldPrice:150,  isSale:true,
+      descKa:'ადაპტერი ევროპული Type 2 (IEC 62196) სტანდარტიდან ამერიკულ Type 1 (J1772) სტანდარტზე. საშუალებას გაძლევთ Type 1 მანქანა დაამუხტოთ ევროპულ სადგურებზე.',
+      descEn:'Adapter from European Type 2 (IEC 62196) to American Type 1 (J1772) standard. Allows Type 1 vehicles to charge at European stations.' },
+    { id:6,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 ჩამკეტით',             nameEn:'Type 2 to Type 1 with Locker',            price:170,  oldPrice:null, isSale:false,
+      descKa:'Type 2-დან Type 1-ზე გადამყვანი ჩაშენებული ჩამკეტი მექანიზმით — დამუხტვის პროცესში მჭიდროდ ინახება ადგილზე და გამორიცხავს შემთხვევით გათიშვას.',
+      descEn:'Type 2 to Type 1 adapter with built-in locking mechanism — stays securely in place during charging and prevents accidental disconnection.' },
+    { id:7,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla FastCharger CCS2 to Tesla (AC+DC)', nameEn:'Tesla FastCharger Adapter CCS2 to Tesla', price:240, oldPrice:null, isSale:false,
+      descKa:'Tesla-სთვის CCS2 სტანდარტის გადამყვანი, რომელიც მხარს უჭერს ერთდროულად AC და DC სწრაფ დამუხტვას. იდეალურია CCS2 საჯარო სადგურებზე Tesla-ს დასამუხტად.',
+      descEn:'CCS2 adapter for Tesla supporting both AC and DC fast charging. Ideal for charging Tesla at CCS2 public stations.' },
+    { id:8,  cat:'adapter',  emoji:'🔌', nameKa:'დამტენის ადაფტერი Type 2 → Tesla',       nameEn:'Charger Adapter Type 2 to Tesla',         price:120,  oldPrice:140,  isSale:true,
+      descKa:'Tesla-ს საბორტო კონექტორიდან ევროპულ Type 2 სადგურებზე AC დამუხტვის ადაპტერი. კომპაქტური და მარტივი გამოყენება.',
+      descEn:'AC charging adapter from Tesla onboard connector to European Type 2 stations. Compact and easy to use.' },
+    { id:9,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 კაბელი',               nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:270,  oldPrice:320,  isSale:true,
+      descKa:'Type 2-დან Type 1-ზე სრული დამტენი კაბელი — ადაპტერის ნაცვლად კომფორტული, მოქნილი კაბელი AC დამუხტვისთვის.',
+      descEn:'Full Type 2 to Type 1 charging cable — a comfortable, flexible cable for AC charging instead of an adapter.' },
+    { id:10, cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Tesla კაბელი',                nameEn:'Type 2 to Tesla Cable',                   price:340,  oldPrice:440,  isSale:true,
+      descKa:'Tesla-ს Type 2 ევროპულ სადგურებთან დასაკავშირებელი სრული დამტენი კაბელი. მაღალი ხარისხი და გამძლეობა.',
+      descEn:'Full charging cable for connecting Tesla to European Type 2 stations. High quality and durability.' },
+    { id:11, cat:'adapter',  emoji:'🔌', nameKa:'nema14-50 დან ევროპულ როზეტზე გადამყვანი', nameEn:'nema14-50 to EU socket Adapter',       price:70,   oldPrice:null, isSale:false,
+      descKa:'NEMA 14-50 ამერიკული სტანდარტის 240V როზეტიდან ევროპულ Schuko სტანდარტზე გადამყვანი. ამერიკული დამტენის ევროპულ ელქტრომომარაგებასთან შესაერთებლად.',
+      descEn:'Adapter from American NEMA 14-50 240V outlet to European Schuko standard. For connecting American chargers to European power supply.' },
     // ── დამტენის სადგური / Charging Stations ──
-    { id:12, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1(J1772) 48A',      nameEn:'Home Charging Station Type 1(J1772) 48A', price:950,  oldPrice:null, isSale:false },
-    { id:13, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 40A',              nameEn:'Home Charging Station Tesla 40A',         price:580,  oldPrice:null, isSale:false },
-    { id:14, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 32A',              nameEn:'Home Charging Station Tesla 32A',         price:500,  oldPrice:null, isSale:false },
-    { id:15, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1 32A',             nameEn:'Home Charging Station Type 1 32A',        price:500,  oldPrice:null, isSale:false },
+    { id:12, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1(J1772) 48A',      nameEn:'Home Charging Station Type 1(J1772) 48A', price:950,  oldPrice:null, isSale:false,
+      descKa:'სახლის კედელზე სამონტაჟო EV დამტენი Type 1 (J1772) — 48A, 11.5kW. უზრუნველყოფს სწრაფ ღამის დამუხტვას სახლის პირობებში.',
+      descEn:'Home wall-mount EV charger Type 1 (J1772) — 48A, 11.5kW. Provides fast overnight charging at home.' },
+    { id:13, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 40A',              nameEn:'Home Charging Station Tesla 40A',         price:580,  oldPrice:null, isSale:false,
+      descKa:'Tesla-სთვის სახლის კედელზე სამონტაჟო სადგური — 40A, 9.6kW. Tesla Wall Connector-ის სრულფასოვანი ანალოგი.',
+      descEn:'Wall-mount home charging station for Tesla — 40A, 9.6kW. Full equivalent of the Tesla Wall Connector.' },
+    { id:14, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 32A',              nameEn:'Home Charging Station Tesla 32A',         price:500,  oldPrice:null, isSale:false,
+      descKa:'Tesla-სთვის სახლის კედელზე სამონტაჟო სადგური — 32A, 7.7kW. ეფექტური და ხელმისაწვდომი სახლის გამოსავალი.',
+      descEn:'Wall-mount home charging station for Tesla — 32A, 7.7kW. Efficient and affordable home charging solution.' },
+    { id:15, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1 32A',             nameEn:'Home Charging Station Type 1 32A',        price:500,  oldPrice:null, isSale:false,
+      descKa:'სახლის კედელზე სამონტაჟო EV დამტენი Type 1 (J1772) — 32A, 7.7kW. საიმედო და მარტივი ინსტალაცია.',
+      descEn:'Home wall-mount EV charger Type 1 (J1772) — 32A, 7.7kW. Reliable and easy installation.' },
     // ── სახლის პორტატული დამტენი / Portable Chargers ──
-    { id:16, cat:'portable', emoji:'🔋', nameKa:'პორტატული დამტენი Type 1',              nameEn:'Home Portable Charger Type 1 (J1772)',    price:280,  oldPrice:null, isSale:false },
+    { id:16, cat:'portable', emoji:'🔋', nameKa:'პორტატული დამტენი Type 1',              nameEn:'Home Portable Charger Type 1 (J1772)',    price:280,  oldPrice:null, isSale:false,
+      descKa:'პორტატული EV დამტენი Type 1 (J1772). ჩვეულებრივ 220V/16A როზეტთან მუშაობს — სახლში, სასტუმროში ან სხვა ნებისმიერ ადგილას.',
+      descEn:'Portable EV charger Type 1 (J1772). Works with standard 220V/16A outlet — at home, hotel, or anywhere you have a socket.' },
     // ── აქსესუარები / Accessories ──
-    { id:17, cat:'accessory',emoji:'💾', nameKa:'Tesla 64გბ ფლეშკა',                    nameEn:'Tesla 64GB Flash Drive',                  price:60,   oldPrice:null, isSale:false },
-    { id:18, cat:'accessory',emoji:'💾', nameKa:'Tesla 128გბ ფლეშკა',                   nameEn:'Tesla 128GB Flash Drive',                 price:80,   oldPrice:null, isSale:false },
+    { id:17, cat:'accessory',emoji:'💾', nameKa:'Tesla 64გბ ფლეშკა',                    nameEn:'Tesla 64GB Flash Drive',                  price:60,   oldPrice:null, isSale:false,
+      descKa:'Tesla-ს მანქანებთან თავსებადი 64გბ USB ფლეშ დრაივი. Sentry Mode და DashCam ვიდეოს ჩასაწერად. სწრაფი წაკითხვა/ჩაწერა, Tesla-ს USB პორტის ზომებზე მორგებული.',
+      descEn:'64GB USB flash drive compatible with Tesla vehicles. For Sentry Mode and DashCam video recording. Fast read/write, sized to fit Tesla USB port.' },
+    { id:18, cat:'accessory',emoji:'💾', nameKa:'Tesla 128გბ ფლეშკა',                   nameEn:'Tesla 128GB Flash Drive',                 price:80,   oldPrice:null, isSale:false,
+      descKa:'Tesla-ს მანქანებთან თავსებადი 128გბ USB ფლეშ დრაივი. Sentry Mode და DashCam ვიდეოს ჩასაწერად. მეტი მეხსიერება — მეტი ჩანაწერი.',
+      descEn:'128GB USB flash drive compatible with Tesla vehicles. For Sentry Mode and DashCam video recording. More storage — more recordings.' },
   ];
 
   const categories = [
@@ -682,12 +875,20 @@
                 ${p.oldPrice ? `<span class="old-price">₾${p.oldPrice}</span>` : ''}
                 ₾${p.price}<span class="currency">GEL</span>
               </div>
-              <button class="card-order" onclick="openModal(${p.id})">${orderLabel}</button>
+              <button class="card-order" onclick="event.stopPropagation();goToProduct(${p.id})">${orderLabel}</button>
             </div>
           </div>
         </div>
       `;
     }).join('');
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function() {
+        const btn = this.querySelector('.card-order');
+        const id = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+        goToProduct(id);
+      });
+    });
   }
 
   function setCategory(cat) {
@@ -709,28 +910,102 @@
       el.innerHTML = el.getAttribute('data-' + l);
     });
     renderCategories();
+    const id = new URLSearchParams(location.search).get('id');
+    if (id) showDetail(parseInt(id));
+    else renderProducts();
+  }
+
+  // ── DETAIL PAGE ──
+  const shopSections = ['#features-strip', '#shop-section', '#contact-section'];
+
+  function goToProduct(id) {
+    history.pushState({}, '', '?id=' + id);
+    showDetail(id);
+    window.scrollTo(0, 0);
+  }
+
+  function goBack() {
+    history.pushState({}, '', location.pathname);
+    hideDetail();
+    window.scrollTo(0, 0);
+  }
+
+  function showDetail(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const name    = lang === 'ka' ? p.nameKa : p.nameEn;
+    const catData = categories.find(c => c.id === p.cat);
+    const catName = catData ? (lang === 'ka' ? catData.ka : catData.en) : '';
+    const msg     = encodeURIComponent(`გამარჯობა! მინდა შევუკვეთო: ${p.nameKa} (₾${p.price})`);
+
+    // image
+    const imgWrap = document.getElementById('detail-img-wrap');
+    imgWrap.innerHTML = `
+      <img src="images/product-${p.id}.jpg" alt="${name}"
+           style="width:100%;height:100%;object-fit:contain;padding:24px;"
+           onerror="this.style.display='none';document.getElementById('detail-emoji').style.display='block'" />
+      <span id="detail-emoji" style="display:none;font-size:5rem">${p.emoji}</span>
+    `;
+
+    document.getElementById('detail-cat').textContent   = catName;
+    document.getElementById('detail-name').textContent  = name;
+    document.getElementById('detail-sale-badge').innerHTML = p.isSale
+      ? `<span class="detail-badge">${lang === 'ka' ? 'ფასდაკლება' : 'Sale'}</span>` : '';
+    document.getElementById('detail-price').innerHTML =
+      (p.oldPrice ? `<span class="old">₾${p.oldPrice}</span>` : '') +
+      `₾${p.price}<span class="currency"> GEL</span>`;
+
+    document.getElementById('detail-wa').href  = `https://wa.me/${PHONE}?text=${msg}`;
+    document.getElementById('detail-vib').href = `viber://chat?number=${PHONE}&text=${msg}`;
+    document.getElementById('detail-desc').textContent = lang === 'ka' ? (p.descKa || '') : (p.descEn || '');
+
+    // update data-ka elements inside detail
+    document.querySelectorAll('#detail-page [data-ka]').forEach(el => {
+      el.innerHTML = el.getAttribute('data-' + lang);
+    });
+
+    document.querySelector('.features')?.style.setProperty('display','none');
+    document.querySelector('.shop')?.style.setProperty('display','none');
+    document.querySelector('.contact')?.style.setProperty('display','none');
+    document.querySelector('footer')?.style.setProperty('display','none');
+    document.getElementById('detail-page').style.display = 'block';
+  }
+
+  function hideDetail() {
+    document.getElementById('detail-page').style.display = 'none';
+    document.querySelector('.features')?.style.removeProperty('display');
+    document.querySelector('.shop')?.style.removeProperty('display');
+    document.querySelector('.contact')?.style.removeProperty('display');
+    document.querySelector('footer')?.style.removeProperty('display');
+    renderCategories();
     renderProducts();
   }
 
-  function openModal(productId) {
-    const p = products.find(x => x.id === productId);
-    const name = lang === 'ka' ? p.nameKa : p.nameEn;
-    const msg = encodeURIComponent(`გამარჯობა! მინდა შევუკვეთო: ${p.nameKa} (₾${p.price})`);
-    document.getElementById('modal-title').textContent = (lang === 'ka' ? 'შეკვეთა: ' : 'Order: ') + name;
-    document.getElementById('modal-desc').textContent = lang === 'ka' ? 'აირჩიეთ შეკვეთის გზა:' : 'Choose how to order:';
-    document.getElementById('modal-wa').href  = `https://wa.me/${PHONE}?text=${msg}`;
-    document.getElementById('modal-vib').href = `viber://chat?number=${PHONE}&text=${msg}`;
-    document.getElementById('modal').classList.add('open');
+  function copyLink() {
+    navigator.clipboard.writeText(location.href).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = lang === 'ka' ? 'დაკოპირდა!' : 'Copied!';
+      setTimeout(() => { btn.textContent = lang === 'ka' ? 'ლინკის კოპირება' : 'Copy link'; }, 2000);
+    });
   }
 
-  function closeModal(e) {
-    if (!e || e.target === document.getElementById('modal')) {
-      document.getElementById('modal').classList.remove('open');
-    }
-  }
+  // handle browser back/forward
+  window.addEventListener('popstate', () => {
+    const id = new URLSearchParams(location.search).get('id');
+    if (id) showDetail(parseInt(id));
+    else hideDetail();
+  });
 
-  renderCategories();
-  renderProducts();
+  // init
+  const initId = new URLSearchParams(location.search).get('id');
+  if (initId) {
+    renderCategories();
+    renderProducts();
+    showDetail(parseInt(initId));
+  } else {
+    renderCategories();
+    renderProducts();
+  }
 </script>
 </body>
 </html>
