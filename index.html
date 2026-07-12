@@ -647,6 +647,7 @@
       .lang-toggle button { padding: 4px 9px; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -803,85 +804,38 @@
 <script>
   const PHONE = '995551546446';
 
-  const products = [
-    // ── კომპლექტი / Bundles ──
-    { id:1,  cat:'bundle',   emoji:'📦', nameKa:'ამერიკული კომპლექტი',                    nameEn:'American Bundle',                         price:800, oldPrice:940,  isSale:true,
-      descKa:'კომპლექტი მოიცავს ამერიკული სტანდარტის EV დამტენის ადაპტერებს. იდეალურია ამერიკული ელექტრომობილების მფლობელებისთვის საქართველოში — ერთ კომპლექტში ყველა საჭირო ადაპტერი.',
-      descEn:'A complete set of American standard EV charger adapters. Ideal for owners of American electric vehicles in Georgia — all the adapters you need in one bundle.' },
-    { id:2,  cat:'bundle',   emoji:'📦', nameKa:'ტესლას კომპლექტი',                       nameEn:'Tesla Bundle',                            price:800, oldPrice:930,  isSale:true,
-      descKa:'სრული კომპლექტი Tesla-ს მფლობელებისთვის — მოიცავს ყველა საჭირო ადაპტერს სხვადასხვა სადგურსა და სახლის განსხვავებულ დამტენ გადაწყვეტებთან თავსებადობისთვის.',
-      descEn:'Complete bundle for Tesla owners — includes all necessary adapters for compatibility with various charging stations and home charging solutions.' },
-    // ── გადამყვანი / Adapters ──
-    { id:3,  cat:'adapter',  emoji:'🔌', nameKa:'FastCharger CCS2 to CCS1',               nameEn:'FastCharger CCS2 to CCS1',                price:300,  oldPrice:380,  isSale:true,
-      descKa:'DC სწრაფი დამტენის ადაპტერი CCS2-დან CCS1-ზე. ხელს უწყობს CCS1 სტანდარტის მქონე მანქანების სწრაფ დატენვას CCS2 სადგურებზე.',
-      descEn:'DC fast charger adapter from CCS2 to CCS1. Enables CCS1 standard vehicles to fast charge at CCS2 stations.' },
-    { id:4,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla to Type 1 (J1772)',                nameEn:'Tesla to Type 1 (J1772)',                 price:180,  oldPrice:null, isSale:false,
-      descKa:'ადაპტერი Tesla-ს კომპაქტური კონექტორიდან Type 1 (J1772) სტანდარტზე. სახლის ან Level 2 საჯარო სადგურებზე AC დასატენად.',
-      descEn:'Adapter from Tesla compact connector to Type 1 (J1772) standard. For AC charging at home or Level 2 public stations.' },
-    { id:5,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1',                      nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:120,  oldPrice:150,  isSale:true,
-      descKa:'ადაპტერი ევროპული Type 2 (IEC 62196) სტანდარტიდან ამერიკულ Type 1 (J1772) სტანდარტზე. საშუალებას გაძლევთ Type 1 მანქანა დაამუხტოთ ევროპულ სადგურებზე.',
-      descEn:'Adapter from European Type 2 (IEC 62196) to American Type 1 (J1772) standard. Allows Type 1 vehicles to charge at European stations.' },
-    { id:6,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 ჩამკეტით',             nameEn:'Type 2 to Type 1 with Locker',            price:170,  oldPrice:null, isSale:false,
-      descKa:'Type 2-დან Type 1-ზე გადამყვანი ჩაშენებული ჩამკეტი მექანიზმით — დამუხტვის პროცესში მჭიდროდ ინახება ადგილზე და გამორიცხავს შემთხვევით გათიშვას.',
-      descEn:'Type 2 to Type 1 adapter with built-in locking mechanism — stays securely in place during charging and prevents accidental disconnection.' },
-    { id:7,  cat:'adapter',  emoji:'🔌', nameKa:'Tesla FastCharger CCS2 to Tesla (AC+DC)', nameEn:'Tesla FastCharger Adapter CCS2 to Tesla', price:240, oldPrice:null, isSale:false,
-      descKa:'Tesla-სთვის CCS2 სტანდარტის გადამყვანი, რომელიც მხარს უჭერს ერთდროულად AC და DC სწრაფ დამუხტვას. იდეალურია CCS2 საჯარო სადგურებზე Tesla-ს დასამუხტად.',
-      descEn:'CCS2 adapter for Tesla supporting both AC and DC fast charging. Ideal for charging Tesla at CCS2 public stations.' },
-    { id:8,  cat:'adapter',  emoji:'🔌', nameKa:'დამტენის ადაფტერი Type 2 → Tesla',       nameEn:'Charger Adapter Type 2 to Tesla',         price:120,  oldPrice:140,  isSale:true,
-      descKa:'Tesla-ს საბორტო კონექტორიდან ევროპულ Type 2 სადგურებზე AC დამუხტვის ადაპტერი. კომპაქტური და მარტივი გამოყენება.',
-      descEn:'AC charging adapter from Tesla onboard connector to European Type 2 stations. Compact and easy to use.' },
-    { id:9,  cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Type 1 კაბელი',               nameEn:'Type 2 (IEC62196) to Type 1 (J1772)',     price:270,  oldPrice:320,  isSale:true,
-      descKa:'Type 2-დან Type 1-ზე სრული დამტენი კაბელი — ადაპტერის ნაცვლად კომფორტული, მოქნილი კაბელი AC დამუხტვისთვის.',
-      descEn:'Full Type 2 to Type 1 charging cable — a comfortable, flexible cable for AC charging instead of an adapter.' },
-    { id:10, cat:'adapter',  emoji:'🔌', nameKa:'Type 2 to Tesla კაბელი',                nameEn:'Type 2 to Tesla Cable',                   price:340,  oldPrice:440,  isSale:true,
-      descKa:'Tesla-ს Type 2 ევროპულ სადგურებთან დასაკავშირებელი სრული დამტენი კაბელი. მაღალი ხარისხი და გამძლეობა.',
-      descEn:'Full charging cable for connecting Tesla to European Type 2 stations. High quality and durability.' },
-    { id:11, cat:'adapter',  emoji:'🔌', nameKa:'nema14-50 დან ევროპულ როზეტზე გადამყვანი', nameEn:'nema14-50 to EU socket Adapter',       price:70,   oldPrice:null, isSale:false,
-      descKa:'NEMA 14-50 ამერიკული სტანდარტის 240V როზეტიდან ევროპულ Schuko სტანდარტზე გადამყვანი. ამერიკული დამტენის ევროპულ ელქტრომომარაგებასთან შესაერთებლად.',
-      descEn:'Adapter from American NEMA 14-50 240V outlet to European Schuko standard. For connecting American chargers to European power supply.' },
-    { id:19, cat:'adapter',  emoji:'🔌', nameKa:'Nema 14-50 როზეტი',                    nameEn:'NEMA 14-50 Socket',                       price:50,   oldPrice:null, isSale:false,
-      descKa:'NEMA 14-50 სტანდარტის კედლის ელექტრო როზეტი. EV დამტენის სახლში სამონტაჟოდ — 240V/50A გამომუშავება.',
-      descEn:'NEMA 14-50 standard wall outlet for home EV charger installation — 240V/50A output.' },
-    { id:20, cat:'portable', emoji:'🔋', nameKa:'Tesla Gen 2 დამტენის თავი Nema14-50 32A', nameEn:'Tesla Gen 2 Charger Head NEMA14-50 32A', price:100,  oldPrice:null, isSale:false,
-      descKa:'Tesla Gen 2 მობილური კონექტორის ადაპტერის თავი NEMA 14-50 სტანდარტისთვის — 32A, 7.7kW. სახლში სწრაფი დამუხტვისთვის.',
-      descEn:'Tesla Gen 2 mobile connector adapter head for NEMA 14-50 standard — 32A, 7.7kW. For fast home charging.' },
-    { id:21, cat:'portable', emoji:'🔋', nameKa:'Tesla Gen 2 დამტენის თავი Schuko 16A',  nameEn:'Tesla Gen 2 Charger Head Schuko 16A',    price:80,   oldPrice:null, isSale:false,
-      descKa:'Tesla Gen 2 მობილური კონექტორის ადაპტერის თავი ევროპული Schuko სტანდარტისთვის — 16A, 3.7kW. ნებისმიერ სტანდარტულ ევრო როზეტთან.',
-      descEn:'Tesla Gen 2 mobile connector adapter head for European Schuko standard — 16A, 3.7kW. Works with any standard European outlet.' },
-    // ── დამტენის სადგური / Charging Stations ──
-    { id:12, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1(J1772) 48A',      nameEn:'Home Charging Station Type 1(J1772) 48A', price:950,  oldPrice:null, isSale:false,
-      descKa:'სახლის კედელზე სამონტაჟო EV დამტენი Type 1 (J1772) — 48A, 11.5kW. უზრუნველყოფს სწრაფ ღამის დამუხტვას სახლის პირობებში.',
-      descEn:'Home wall-mount EV charger Type 1 (J1772) — 48A, 11.5kW. Provides fast overnight charging at home.' },
-    { id:13, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 40A',              nameEn:'Home Charging Station Tesla 40A',         price:580,  oldPrice:null, isSale:false,
-      descKa:'Tesla-სთვის სახლის კედელზე სამონტაჟო სადგური — 40A, 9.6kW. Tesla Wall Connector-ის სრულფასოვანი ანალოგი.',
-      descEn:'Wall-mount home charging station for Tesla — 40A, 9.6kW. Full equivalent of the Tesla Wall Connector.' },
-    { id:14, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Tesla 32A',              nameEn:'Home Charging Station Tesla 32A',         price:500,  oldPrice:null, isSale:false,
-      descKa:'Tesla-სთვის სახლის კედელზე სამონტაჟო სადგური — 32A, 7.7kW. ეფექტური და ხელმისაწვდომი სახლის გამოსავალი.',
-      descEn:'Wall-mount home charging station for Tesla — 32A, 7.7kW. Efficient and affordable home charging solution.' },
-    { id:15, cat:'station',  emoji:'🏠', nameKa:'სახლის დამტენი Type 1 32A',             nameEn:'Home Charging Station Type 1 32A',        price:500,  oldPrice:null, isSale:false,
-      descKa:'სახლის კედელზე სამონტაჟო EV დამტენი Type 1 (J1772) — 32A, 7.7kW. საიმედო და მარტივი ინსტალაცია.',
-      descEn:'Home wall-mount EV charger Type 1 (J1772) — 32A, 7.7kW. Reliable and easy installation.' },
-    // ── სახლის პორტატული დამტენი / Portable Chargers ──
-    { id:16, cat:'portable', emoji:'🔋', nameKa:'პორტატული დამტენი Type 1',              nameEn:'Home Portable Charger Type 1 (J1772)',    price:280,  oldPrice:null, isSale:false,
-      descKa:'პორტატული EV დამტენი Type 1 (J1772). ჩვეულებრივ 220V/16A როზეტთან მუშაობს — სახლში, სასტუმროში ან სხვა ნებისმიერ ადგილას.',
-      descEn:'Portable EV charger Type 1 (J1772). Works with standard 220V/16A outlet — at home, hotel, or anywhere you have a socket.' },
-    { id:22, cat:'portable', emoji:'🔋', nameKa:'Tesla Gen 1 მობილური კონექტორი',        nameEn:'Tesla Gen 1 Mobile Connector',           price:680,  oldPrice:null, isSale:false,
-      descKa:'Tesla Gen 1 ორიგინალი მობილური კონექტორი — სრული დამტენი კაბელი Tesla-ს პირველი თაობის მანქანებისთვის. Schuko ადაპტერის თავით.',
-      descEn:'Tesla Gen 1 original mobile connector — complete charging cable for first generation Tesla vehicles. Includes Schuko adapter head.' },
-    { id:23, cat:'portable', emoji:'🔋', nameKa:'Tesla Gen 2 მობილური კონექტორი',        nameEn:'Tesla Gen 2 Mobile Connector',           price:720,  oldPrice:null, isSale:false,
-      descKa:'Tesla Gen 2 ორიგინალი მობილური კონექტორი — მოქნილი, პორტატული დამტენი სხვადასხვა ადაპტერის თავებთან თავსებადი. იდეალური სახლსა და მოგზაურობაში.',
-      descEn:'Tesla Gen 2 original mobile connector — flexible portable charger compatible with various adapter heads. Ideal for home and travel.' },
-    { id:24, cat:'portable', emoji:'🔋', nameKa:'Tesla Gen 3 მობილური კონექტორი',        nameEn:'Tesla Gen 3 Mobile Connector',           price:950,  oldPrice:null, isSale:false,
-      descKa:'Tesla Gen 3 ორიგინალი მობილური კონექტორი — უახლესი თაობა, გაუმჯობესებული დიზაინი და მაღალი სიმძლავრე. Tesla-ს ყველა თანამედროვე მოდელთან თავსებადი.',
-      descEn:'Tesla Gen 3 original mobile connector — latest generation with improved design and higher power output. Compatible with all modern Tesla models.' },
-    // ── აქსესუარები / Accessories ──
-    { id:17, cat:'accessory',emoji:'💾', nameKa:'Tesla 64გბ ფლეშკა',                    nameEn:'Tesla 64GB Flash Drive',                  price:60,   oldPrice:null, isSale:false,
-      descKa:'Tesla-ს მანქანებთან თავსებადი 64გბ USB ფლეშ დრაივი. Sentry Mode და DashCam ვიდეოს ჩასაწერად. სწრაფი წაკითხვა/ჩაწერა, Tesla-ს USB პორტის ზომებზე მორგებული.',
-      descEn:'64GB USB flash drive compatible with Tesla vehicles. For Sentry Mode and DashCam video recording. Fast read/write, sized to fit Tesla USB port.' },
-    { id:18, cat:'accessory',emoji:'💾', nameKa:'Tesla 128გბ ფლეშკა',                   nameEn:'Tesla 128GB Flash Drive',                 price:80,   oldPrice:null, isSale:false,
-      descKa:'Tesla-ს მანქანებთან თავსებადი 128გბ USB ფლეშ დრაივი. Sentry Mode და DashCam ვიდეოს ჩასაწერად. მეტი მეხსიერება — მეტი ჩანაწერი.',
-      descEn:'128GB USB flash drive compatible with Tesla vehicles. For Sentry Mode and DashCam video recording. More storage — more recordings.' },
-  ];
+  // Filled in once the Supabase project exists (see supabase/README.md).
+  const SUPABASE_URL = 'https://vkwyeuywscakmjhmojro.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_SLBcnl3YYSMTNL5DkoywAw_ulMZE6RY';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let products = [];
+
+  async function loadProducts() {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Failed to load products:', error);
+      return;
+    }
+
+    products = data.map(row => ({
+      id: row.id,
+      cat: row.category,
+      emoji: row.emoji,
+      nameKa: row.name_ka,
+      nameEn: row.name_en,
+      price: row.price,
+      oldPrice: row.old_price,
+      isSale: row.is_sale,
+      descKa: row.description_ka,
+      descEn: row.description_en,
+      imageUrl: row.image_url,
+    }));
+  }
 
   const categories = [
     { id:'all',       ka:'ყველა',                    en:'All'              },
@@ -921,7 +875,7 @@
         <div class="card">
           <div class="card-img">
             ${p.isSale ? `<span class="badge badge-sale">${lang === 'ka' ? 'ფასდაკლება' : 'Sale'}</span>` : ''}
-            <img src="images/product-${p.id}.jpg" alt="${name}"
+            <img src="${p.imageUrl || ''}" alt="${name}"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
             <span class="placeholder" style="display:none">${p.emoji}</span>
             <img class="logo-watermark" src="logo-mark.png" alt="" />
@@ -999,7 +953,7 @@
     // image
     const imgWrap = document.getElementById('detail-img-wrap');
     imgWrap.innerHTML = `
-      <img src="images/product-${p.id}.jpg" alt="${name}"
+      <img src="${p.imageUrl || ''}" alt="${name}"
            style="width:100%;height:100%;object-fit:contain;"
            onerror="this.style.display='none';document.getElementById('detail-emoji').style.display='block'" />
       <span id="detail-emoji" style="display:none;font-size:5rem">${p.emoji}</span>
@@ -1056,15 +1010,13 @@
   });
 
   // init
-  const initId = new URLSearchParams(location.search).get('id');
-  if (initId) {
+  (async function init() {
+    await loadProducts();
     renderCategories();
     renderProducts();
-    showDetail(parseInt(initId));
-  } else {
-    renderCategories();
-    renderProducts();
-  }
+    const initId = new URLSearchParams(location.search).get('id');
+    if (initId) showDetail(parseInt(initId));
+  })();
 </script>
 </body>
 </html>
