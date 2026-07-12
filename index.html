@@ -807,12 +807,12 @@
   // Filled in once the Supabase project exists (see supabase/README.md).
   const SUPABASE_URL = 'https://vkwyeuywscakmjhmojro.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_SLBcnl3YYSMTNL5DkoywAw_ulMZE6RY';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let products = [];
 
   async function loadProducts() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .order('sort_order', { ascending: true });
