@@ -61,3 +61,16 @@
   .route-actions { margin-top: 13px; }
   .route-card .route-actions button { height: 48px; }
 }
+
+.map-controls { gap: 6px; }
+.map-controls button { min-width: 48px; width: auto; height: 46px; padding: 0 11px; border-radius: 8px; }
+.map-controls span { font-size: 1rem; }
+.map-controls b { font-size: .6rem; }
+.speed-display { min-width: 132px; height: 72px; }
+.speed-display strong { font-size: 2.6rem; }
+
+@media (max-width: 850px) {
+  .map-controls button { min-width: 44px; width: 44px; height: 44px; }
+  .speed-display { min-width: 105px; height: 60px; }
+  .speed-display strong { font-size: 2.15rem; }
+}
