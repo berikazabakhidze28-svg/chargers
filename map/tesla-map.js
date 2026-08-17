@@ -16,6 +16,10 @@ let naprEnabled=false,naprUpdateTimer=null;
 const NAPR_WMS='https://gpv0.napr.gov.ge/inspirevs/napr_ad/ows';
 const NAPR_SETTLEMENT_WMS='https://gpv0.napr.gov.ge/inspirevs/napr_au/ows';
 const $=id=>document.getElementById(id);
+let fullscreenRequested=false;
+function enterFullscreen(event){if(fullscreenRequested||document.fullscreenElement||event?.target?.closest?.('.map-home'))return;const root=document.documentElement;if(!root.requestFullscreen)return;fullscreenRequested=true;try{const request=root.requestFullscreen({navigationUI:'hide'});request?.catch?.(()=>{fullscreenRequested=false})}catch{root.requestFullscreen()?.catch?.(()=>{fullscreenRequested=false})}}
+document.addEventListener('pointerdown',enterFullscreen,{capture:true});
+document.addEventListener('fullscreenchange',()=>setTimeout(()=>map.resize(),80));
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const km=value=>value<1000?`${Math.round(value)} მ`:`${(value/1000).toFixed(value<10000?1:0)} კმ`;
 function distance(a,b){const rad=x=>x*Math.PI/180,R=6371000,dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng),q=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
