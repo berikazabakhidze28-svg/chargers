@@ -101,6 +101,7 @@ body:has(.route-card:not([hidden])) .map-home { right: 350px; bottom: 18px; }
 .map-controls button { min-width: 48px; width: auto; height: 46px; padding: 0 11px; border-radius: 8px; }
 .map-controls span { font-size: 1rem; }
 .map-controls b { font-size: .6rem; }
+.map-controls #locateButton img { width: 25px; height: 25px; object-fit: contain; filter: invert(1); }
 .charger-panel { background: rgba(16,20,23,.52); backdrop-filter: blur(9px); }
 .charger-panel .charger-search { background: rgba(8,11,13,.55); border-color: rgba(255,255,255,.15); }
 .speed-display { left: 18px; right: auto; top: auto; bottom: 18px; min-width: 76px; width: 76px; height: 76px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: #111; align-items: center; justify-content: center; }
