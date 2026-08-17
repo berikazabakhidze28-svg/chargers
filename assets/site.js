@@ -25,4 +25,4 @@ if (location.pathname === '/' || location.pathname.endsWith('/index.html')) {
     document.body.appendChild(productsScript);
   }
 }
-if(!document.querySelector('script[data-chargerx-i18n]')){const i18n=document.createElement('script');i18n.src='/assets/i18n.js?v=1';i18n.dataset.chargerxI18n='';document.head.append(i18n)}
+if(!document.querySelector('script[data-chargerx-i18n]')){const i18n=document.createElement('script');i18n.src='/assets/i18n.js?v=2';i18n.dataset.chargerxI18n='';document.head.append(i18n)}
