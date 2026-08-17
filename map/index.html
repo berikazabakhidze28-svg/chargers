@@ -8,7 +8,7 @@
   <title>დამტენების რუკა — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/map/tesla-map.css"><link rel="stylesheet" href="/map/address-search.css"><link rel="stylesheet" href="/map/navigation-mode.css"><link rel="stylesheet" href="/map/napr-overlay.css">
+  <link rel="stylesheet" href="/map/tesla-map.css"><link rel="stylesheet" href="/map/address-search.css"><link rel="stylesheet" href="/map/navigation-mode.css"><link rel="stylesheet" href="/map/napr-overlay.css"><link rel="stylesheet" href="/map/route-card.css">
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script defer src="/assets/supabase-config.js"></script>
   <script defer src="/map/tesla-map.js"></script>
@@ -48,7 +48,15 @@
     <div class="detail-actions"><button id="routeButton">მარშრუტი</button><a id="externalRoute" target="_blank" rel="noopener">Google Maps ↗</a></div>
   </section>
 
-  <div class="route-card" id="routeCard" hidden><div><small>მარშრუტი</small><strong id="routeDistance">—</strong><span id="routeDuration">—</span></div><button id="routeClose">დასრულება</button></div>
+  <div class="route-card" id="routeCard" hidden>
+    <div class="route-destination" id="routeDestination">დანიშნულების ადგილი</div>
+    <div class="route-stats">
+      <div><strong id="routeDistance">—</strong><small>DIST</small></div>
+      <div><strong id="routeDuration">—</strong><small>TIME</small></div>
+      <div><strong id="routeArrival">—</strong><small>ARRIVE</small></div>
+    </div>
+    <div class="route-actions"><button id="routeGo">GO</button><button id="routeClose" aria-label="მარშრუტის დახურვა">×</button></div>
+  </div>
   <div class="map-toast" id="mapToast" hidden></div>
 </body>
 </html>

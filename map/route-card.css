@@ -1,0 +1,35 @@
+.route-card {
+  width: min(430px, calc(100vw - 24px));
+  padding: 19px 24px 18px;
+  border: 0;
+  border-radius: 20px;
+  background: rgba(43, 45, 49, .94);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .28);
+  display: block;
+  color: #fff;
+  backdrop-filter: blur(16px);
+}
+.route-destination {
+  overflow: hidden;
+  margin-bottom: 12px;
+  color: #f5f5f5;
+  font-size: .78rem;
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.route-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.route-stats div { text-align: center; }
+.route-card .route-stats strong { margin: 0; font-size: 1.35rem; line-height: 1.1; }
+.route-card .route-stats small { margin-top: 3px; color: #aaa; font-size: .61rem; font-weight: 800; letter-spacing: .06em; }
+.route-actions { display: grid; grid-template-columns: 1fr 58px; gap: 12px; margin-top: 18px; }
+.route-card .route-actions button { height: 54px; margin: 0; border: 0; border-radius: 12px; font: inherit; font-size: 1rem; font-weight: 900; }
+.route-card #routeGo { background: #24cf3d; color: #030503; }
+.route-card #routeClose { background: linear-gradient(145deg, #55575d, #35363b); color: #fff; font-size: 1.35rem; }
+
+@media (max-width: 850px) {
+  .route-card { top: 76px; bottom: auto; padding: 15px 18px; }
+  .route-actions { margin-top: 13px; }
+  .route-card .route-actions button { height: 48px; }
+}
