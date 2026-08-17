@@ -1,4 +1,5 @@
 .map-header { display: none; }
+.maneuver-card[hidden],.route-card[hidden] { display: none !important; }
 .charger-panel { top: 18px; }
 .map-home {
   position: fixed;
