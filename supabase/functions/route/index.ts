@@ -13,6 +13,12 @@ Deno.serve(async request=>{
     if(!upstream.ok)return json({error:"Routing unavailable"},upstream.status);
     const data=await upstream.json(),route=data.routes?.[0];if(!route)return json({error:"No route"},404);
     const coordinates=route.legs.flatMap((leg:any,index:number)=>leg.points.map((point:any)=>[point.longitude,point.latitude]).slice(index?1:0));
-    return json({geometry:{type:"LineString",coordinates},distance:route.summary.lengthInMeters,duration:route.summary.travelTimeInSeconds,trafficDelay:route.summary.trafficDelayInSeconds||0,arrivalTime:route.summary.arrivalTime});
+    const guidance=(route.guidance?.instructions||[]).map((instruction:any)=>({
+      message:instruction.message||"",
+      maneuver:instruction.maneuver||"",
+      routeOffset:instruction.routeOffsetInMeters||0,
+      point:instruction.point?{lat:instruction.point.latitude,lng:instruction.point.longitude}:null
+    }));
+    return json({geometry:{type:"LineString",coordinates},distance:route.summary.lengthInMeters,duration:route.summary.travelTimeInSeconds,trafficDelay:route.summary.trafficDelayInSeconds||0,arrivalTime:route.summary.arrivalTime,guidance});
   }catch{return json({error:"Routing unavailable"},502)}
 });
