@@ -6,6 +6,7 @@ const map=new maplibregl.Map({container:'map',style:VOYAGER_STYLE,center:GEORGIA
 map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-left');
 
 let chargers=[],markers=[],selected=null,userLocation=null,userMarker=null,is3d=false,routeActive=false,searchMarker=null,searchTimer=null;
+let trackingStarted=false,lastTrackPoint=null,firstGpsFix=true;
 const $=id=>document.getElementById(id);
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const km=value=>value<1000?`${Math.round(value)} მ`:`${(value/1000).toFixed(value<10000?1:0)} კმ`;
@@ -26,6 +27,21 @@ function selectCharger(charger,move=false){selected=charger;markers.forEach(x=>x
 
 function locateUser(showMessage=true){if(!navigator.geolocation){toast('GPS ამ ბრაუზერში მიუწვდომელია');return}navigator.geolocation.getCurrentPosition(position=>{userLocation={lat:position.coords.latitude,lng:position.coords.longitude};if(!userMarker){const el=document.createElement('div');el.className='user-location';el.style.cssText='width:22px;height:22px;border:4px solid white;border-radius:50%;background:#287cf5;box-shadow:0 0 0 8px #287cf533';userMarker=new maplibregl.Marker({element:el}).setLngLat([userLocation.lng,userLocation.lat]).addTo(map)}else userMarker.setLngLat([userLocation.lng,userLocation.lat]);map.easeTo({center:[userLocation.lng,userLocation.lat],zoom:15,pitch:is3d?50:0});renderList();if(showMessage)toast('მდებარეობა განახლებულია')},()=>toast('მდებარეობის მიღება ვერ მოხერხდა'),{enableHighAccuracy:true,timeout:10000,maximumAge:30000})}
 
+function startSpeedTracking(){
+  if(trackingStarted||!navigator.geolocation)return;
+  trackingStarted=true;
+  navigator.geolocation.watchPosition(position=>{
+    const now=position.timestamp||Date.now(),point={lat:position.coords.latitude,lng:position.coords.longitude,time:now};
+    let speed=Number.isFinite(position.coords.speed)&&position.coords.speed>=0?position.coords.speed*3.6:null;
+    if(speed===null&&lastTrackPoint){const seconds=(now-lastTrackPoint.time)/1000;if(seconds>0&&seconds<30)speed=distance(lastTrackPoint,point)/seconds*3.6}
+    if(speed===null||speed<2.5)speed=0;speed=Math.min(250,Math.round(speed));
+    $('speedValue').textContent=speed;$('speedDisplay').classList.toggle('moving',speed>0);$('speedDisplay').classList.toggle('fast',speed>=120);
+    userLocation={lat:point.lat,lng:point.lng};lastTrackPoint=point;
+    if(!userMarker){const el=document.createElement('div');el.className='user-location';el.style.cssText='width:22px;height:22px;border:4px solid white;border-radius:50%;background:#287cf5;box-shadow:0 0 0 8px #287cf533';userMarker=new maplibregl.Marker({element:el}).setLngLat([point.lng,point.lat]).addTo(map)}else userMarker.setLngLat([point.lng,point.lat]);
+    if(firstGpsFix){firstGpsFix=false;map.easeTo({center:[point.lng,point.lat],zoom:15,duration:700})}
+  },()=>{$('networkStatus').textContent='GPS მიუწვდომელია'},{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
+}
+
 async function buildRoute(){if(!selected)return;if(!userLocation){toast('ჯერ ჩართე მიმდინარე მდებარეობა');locateUser(false);return}$('routeButton').textContent='იგეგმება…';try{const params=new URLSearchParams({from:`${userLocation.lat},${userLocation.lng}`,to:`${selected.lat},${selected.lng}`});const response=await fetch(`${SUPABASE_URL}/functions/v1/route?${params}`);if(!response.ok)throw new Error('No route');const route=await response.json(),source=map.getSource('active-route');source.setData({type:'Feature',geometry:route.geometry,properties:{}});routeActive=true;$('routeDistance').textContent=km(route.distance);$('routeDuration').textContent=`დაახლოებით ${Math.round(route.duration/60)} წუთი`;$('routeCard').hidden=false;$('chargerDetail').hidden=true;const bounds=new maplibregl.LngLatBounds();route.geometry.coordinates.forEach(x=>bounds.extend(x));map.fitBounds(bounds,{padding:{top:110,right:90,bottom:100,left:innerWidth>850?450:90},maxZoom:15,duration:1000})}catch(error){toast('მარშრუტის აგება ვერ მოხერხდა')}finally{$('routeButton').textContent='მარშრუტი'}}
 
 function set3d(enabled){is3d=enabled;$('mode3d').setAttribute('aria-pressed',String(enabled));localStorage.setItem('chargerx-map-3d',String(enabled));if(enabled){if(map.getSource('terrain-dem'))map.setTerrain({source:'terrain-dem',exaggeration:1.15});map.easeTo({pitch:55,bearing:-12,duration:800})}else{map.setTerrain(null);map.easeTo({pitch:0,bearing:0,duration:700})}}
@@ -35,9 +51,10 @@ function addressTitle(result){return result.poi?.name||[result.address?.streetNa
 function addressSubtitle(result){return result.address?.freeformAddress||[result.address?.municipality,result.address?.country].filter(Boolean).join(', ')}
 function renderAddressResults(results){const root=$('addressResults');root.hidden=false;root.innerHTML=results.length?results.map((result,index)=>`<button class="address-result" data-address-result="${index}"><span>⌖</span><div><strong>${escapeHtml(addressTitle(result))}</strong><small>${escapeHtml(addressSubtitle(result))}</small></div></button>`).join(''):'<div class="address-empty">მისამართი ვერ მოიძებნა.</div>';root._results=results}
 async function searchAddress(query){const params=new URLSearchParams({q:query});try{const response=await fetch(`${SUPABASE_URL}/functions/v1/geo-search?${params}`);if(!response.ok)throw new Error();const data=await response.json();renderAddressResults(data.results||[])}catch(error){$('addressResults').hidden=true;toast('მისამართის ძიება ჯერ არ არის გამართული')}}
-function chooseAddress(result){const lat=Number(result.position.lat),lng=Number(result.position.lon),name=addressTitle(result),address=addressSubtitle(result);$('addressSearch').value=address;$('addressResults').hidden=true;if(!searchMarker){const element=document.createElement('div');element.className='search-location-marker';searchMarker=new maplibregl.Marker({element,anchor:'bottom'}).setLngLat([lng,lat]).addTo(map)}else searchMarker.setLngLat([lng,lat]);selected={id:null,name,address,city:'',lat,lng,type:'მისამართი',connectors:[],power:null,ports:'—',operator:'',hours:'—',price:'',notes:''};selectCharger(selected,true)}
+function chooseAddress(result){const lat=Number(result.position.lat),lng=Number(result.position.lon),name=addressTitle(result),address=addressSubtitle(result);$('addressSearch').value=address;$('addressResults').hidden=true;if(!searchMarker){const element=document.createElement('div');element.className='search-location-marker';searchMarker=new maplibregl.Marker({element,anchor:'bottom'}).setLngLat([lng,lat]).addTo(map)}else searchMarker.setLngLat([lng,lat]);selected={id:null,name,address,city:'',lat,lng,type:'მისამართი',connectors:[],power:null,ports:'—',operator:'',hours:'—',price:'',notes:''};selectCharger(selected,true);if(userLocation)setTimeout(buildRoute,350);else toast('GPS-ის მიღების შემდეგ დააჭირე „მარშრუტს“')}
 
 map.on('load',()=>{map.addSource('active-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:[]},properties:{}}});map.addLayer({id:'active-route-line',type:'line',source:'active-route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#e82127','line-width':7,'line-opacity':.95}});add3dLayers();fetchChargers()});
+map.on('load',startSpeedTracking);
 $('chargerList').addEventListener('click',event=>{const item=event.target.closest('[data-charger]');if(item)selectCharger(chargers.find(x=>x.id===Number(item.dataset.charger)),true)});
 $('addressSearch').addEventListener('input',event=>{clearTimeout(searchTimer);const query=event.target.value.trim();if(query.length<2){$('addressResults').hidden=true;return}searchTimer=setTimeout(()=>searchAddress(query),420)});
 $('addressResults').addEventListener('click',event=>{const button=event.target.closest('[data-address-result]');if(button)chooseAddress($('addressResults')._results[Number(button.dataset.addressResult)])});

@@ -8,7 +8,7 @@
   <title>დამტენების რუკა — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/map/tesla-map.css"><link rel="stylesheet" href="/map/address-search.css">
+  <link rel="stylesheet" href="/map/tesla-map.css"><link rel="stylesheet" href="/map/address-search.css"><link rel="stylesheet" href="/map/navigation-mode.css">
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script defer src="/assets/supabase-config.js"></script>
   <script defer src="/map/tesla-map.js"></script>
@@ -34,6 +34,8 @@
     <button id="locateButton"><span>⌖</span><b>ჩემი მდებარეობა</b></button>
     <button id="resetNorth"><span>↑</span><b>ჩრდილოეთი</b></button>
   </div>
+
+  <div class="speed-display" id="speedDisplay"><span class="speed-dot"></span><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
 
   <section class="charger-detail" id="chargerDetail" hidden>
     <button class="detail-close" id="detailClose" aria-label="დახურვა">×</button>
