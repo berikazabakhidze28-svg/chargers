@@ -5,9 +5,9 @@
   z-index: 10;
   right: 18px;
   bottom: 18px;
-  min-width: 52px;
-  height: 48px;
-  padding: 0 15px;
+  min-width: 48px;
+  height: 38px;
+  padding: 0 11px;
   border: 1px solid #34393d;
   border-radius: 10px;
   background: rgba(16, 20, 23, .94);
@@ -20,8 +20,8 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
   backdrop-filter: blur(14px);
 }
-.map-home span { font-size: 1.25rem; }
-.map-home b { font-size: .66rem; }
+.map-home span { font-size: 1rem; }
+.map-home b { font-size: .58rem; }
 body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
 
 .route-card {
@@ -96,7 +96,9 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
 .map-controls button { min-width: 48px; width: auto; height: 46px; padding: 0 11px; border-radius: 8px; }
 .map-controls span { font-size: 1rem; }
 .map-controls b { font-size: .6rem; }
-.speed-display { left: auto; right: 18px; top: 18px; bottom: auto; min-width: 76px; width: 76px; height: 76px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: #111; }
+.charger-panel { background: rgba(16,20,23,.52); backdrop-filter: blur(9px); }
+.charger-panel .charger-search { background: rgba(8,11,13,.55); border-color: rgba(255,255,255,.15); }
+.speed-display { left: 18px; right: auto; top: auto; bottom: 18px; min-width: 76px; width: 76px; height: 76px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: #111; }
 .speed-display strong { font-size: 2.25rem; }
 .speed-display small,.speed-display .speed-dot { display: none; }
 .vehicle-arrow { width: 0; height: 0; border-right: 24px solid transparent; border-bottom: 58px solid #2479eb; border-left: 24px solid transparent; filter: drop-shadow(0 4px 3px rgba(0,0,0,.45)); }
@@ -104,6 +106,6 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
 
 @media (max-width: 850px) {
   .map-controls button { min-width: 44px; width: 44px; height: 44px; }
-  .speed-display { left: auto; right: 10px; top: 64px; bottom: auto; min-width: 62px; width: 62px; height: 62px; }
+  .speed-display { left: 10px; right: auto; top: auto; bottom: 10px; min-width: 62px; width: 62px; height: 62px; }
   .speed-display strong { font-size: 1.85rem; }
 }
