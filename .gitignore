@@ -11,3 +11,4 @@ map/tools/
 **/.DS_Store
 .map-git-backup/
 supabase.md
+supabase/.temp/

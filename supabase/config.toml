@@ -1,0 +1,7 @@
+project_id = "vlgwjmrmqfenuglnlqoz"
+
+[functions.geo-search]
+verify_jwt = false
+
+[functions.route]
+verify_jwt = false
