@@ -32,7 +32,7 @@ function setupDetail(){
   const id=Number(new URLSearchParams(location.search).get('id')),product=products.find(x=>x.id===id)||products[0];
   if(!product){root.innerHTML='<div class="empty-state">პროდუქტი ვერ მოიძებნა.</div>';return}
   document.title=`${product.name} — ChargerX`;
-  root.innerHTML=`<div class="detail-image"><img src="${product.image}" alt="${product.name}"></div><div class="detail-copy"><a class="back-link" href="/shop/">← მაღაზიაში დაბრუნება</a><small>${product.categoryLabel}</small><h1>${product.name}</h1><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><div class="compatibility"><span>თავსებადობა</span><p>${product.models.join(' · ')||'დეტალები დასაზუსტებელია'}</p></div><div class="detail-actions"><button class="button primary" data-add-cart="${product.id}">კალათაში დამატება</button><a class="button secondary" target="_blank" rel="noopener" href="https://wa.me/995551546446?text=${encodeURIComponent(`გამარჯობა, მაინტერესებს ${product.name}`)}">WhatsApp</a></div></div>`;
+  root.innerHTML=`<div class="detail-image"><img src="${product.image}" alt="${product.name}"></div><div class="detail-copy"><a class="back-link" href="/">← მაღაზიაში დაბრუნება</a><small>${product.categoryLabel}</small><h1>${product.name}</h1><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><div class="compatibility"><span>თავსებადობა</span><p>${product.models.join(' · ')||'დეტალები დასაზუსტებელია'}</p></div><div class="detail-actions"><a class="button primary" target="_blank" rel="noopener" href="https://wa.me/995551546446?text=${encodeURIComponent(`გამარჯობა, მაინტერესებს ${product.name}`)}">WhatsApp</a></div></div>`;
 }
 
 function renderCart(){
