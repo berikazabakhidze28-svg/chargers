@@ -1,0 +1,9 @@
+map/data/tiles/
+map/TN.RoadTransportNetwork.RoadLink.*
+map/route.php
+map/tools/
+.vscode/
+**/.DS_Store
+.env
+.env.*
+.map-git-backup/

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#0b0d0f">
+  <meta name="description" content="Tesla-სა და ელექტრომობილების დამტენების რუკა საქართველოში.">
+  <title>დამტენების რუკა — ChargerX</title>
+  <link rel="icon" href="/logo-mark.png">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/map/tesla-map.css"><link rel="stylesheet" href="/map/address-search.css">
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script defer src="/assets/supabase-config.js"></script>
+  <script defer src="/map/tesla-map.js"></script>
+</head>
+<body>
+  <div id="map" aria-label="დამტენების რუკა"></div>
+
+  <header class="map-header">
+    <a class="map-brand" href="/"><img src="/logo-mark.png" alt=""><span>CHARGER<b>X</b></span></a>
+    <div class="map-status"><i></i><span id="networkStatus">რუკა მზად არის</span></div>
+    <nav><a href="/shop/">მაღაზია</a><a href="/">მთავარი</a></nav>
+  </header>
+
+  <aside class="charger-panel" id="chargerPanel">
+    <div class="panel-head"><div><small>CHARGING NETWORK</small><h1>დამტენები</h1></div><button id="panelToggle" aria-label="პანელის დამალვა">‹</button></div>
+    <div class="address-search-wrap"><label class="charger-search"><span>⌕</span><input id="addressSearch" type="search" autocomplete="off" placeholder="მისამართის ძიება…"></label><div class="address-results" id="addressResults" hidden></div></div>
+    <div class="list-meta"><span id="chargerCount">0 დამტენი</span><button id="sortNearest">უახლოესი</button></div>
+    <div class="charger-list" id="chargerList"><div class="list-loading">ლოკაციები იტვირთება…</div></div>
+  </aside>
+
+  <div class="map-controls">
+    <button id="mode3d" aria-pressed="false"><span>◇</span><b>3D</b></button>
+    <button id="locateButton"><span>⌖</span><b>ჩემი მდებარეობა</b></button>
+    <button id="resetNorth"><span>↑</span><b>ჩრდილოეთი</b></button>
+  </div>
+
+  <section class="charger-detail" id="chargerDetail" hidden>
+    <button class="detail-close" id="detailClose" aria-label="დახურვა">×</button>
+    <small id="detailType">დამტენი</small><h2 id="detailName">—</h2><p id="detailAddress">—</p>
+    <div class="detail-stats"><div><b id="detailPower">—</b><span>სიმძლავრე</span></div><div><b id="detailPorts">—</b><span>პორტი</span></div><div><b id="detailHours">—</b><span>საათები</span></div></div>
+    <p class="connector-line" id="detailConnectors"></p><p class="price-line" id="detailPrice"></p>
+    <div class="detail-actions"><button id="routeButton">მარშრუტი</button><a id="externalRoute" target="_blank" rel="noopener">Google Maps ↗</a></div>
+  </section>
+
+  <div class="route-card" id="routeCard" hidden><div><small>მარშრუტი</small><strong id="routeDistance">—</strong><span id="routeDuration">—</span></div><button id="routeClose">დასრულება</button></div>
+  <div class="map-toast" id="mapToast" hidden></div>
+</body>
+</html>

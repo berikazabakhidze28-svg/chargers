@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+  <title>დამტენების ლოკაციები — ChargerX</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/assets/site.css"><link rel="stylesheet" href="/assets/admin.css"><link rel="stylesheet" href="/assets/chargers-admin.css"><link rel="stylesheet" href="/assets/location-picker.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script><script defer src="/assets/supabase-config.js"></script><script defer src="/assets/chargers-admin.js"></script>
+</head>
+<body class="admin-body">
+  <header class="admin-top"><div class="admin-shell"><a class="brand" href="/"><img src="/logo-mark.png" alt=""><span>CHARGER<b>X</b></span></a><nav><small data-admin-email></small><button data-sign-out>გასვლა</button></nav></div></header>
+  <main class="admin-shell">
+    <div class="admin-heading"><div><p class="eyebrow"><i></i> მართვის პანელი</p><h1>დამტენების ლოკაციები</h1></div><button class="button primary" data-new-charger>+ ახალი ლოკაცია</button></div>
+    <section class="admin-table" data-chargers></section>
+  </main>
+  <div class="modal" data-charger-modal hidden><form class="modal-card" data-charger-form>
+    <div class="modal-head"><h2 data-modal-title>ახალი ლოკაცია</h2><button type="button" data-close-modal>×</button></div>
+    <div class="form-grid">
+      <div class="field wide"><label>ლოკაციის სახელი</label><input name="name" required></div>
+      <div class="field"><label>ქალაქი</label><input name="city" required></div><div class="field"><label>მისამართი</label><input name="address"></div>
+      <div class="field"><label>Latitude</label><input name="latitude" type="number" min="-90" max="90" step="any" required></div><div class="field"><label>Longitude</label><input name="longitude" type="number" min="-180" max="180" step="any" required></div>
+      <div class="picker-wrap wide"><div class="picker-copy"><strong>აირჩიე მდებარეობა რუკაზე</strong><small>დააჭირე რუკას ან გადაადგილე წითელი მარკერი</small></div><div id="charger-location-picker" aria-label="დამტენის მდებარეობის არჩევის რუკა"></div></div>
+      <div class="location-helper wide"><button type="button" data-my-location>ჩემი მიმდინარე კოორდინატების გამოყენება</button></div>
+      <div class="field"><label>დამტენის ტიპი</label><select name="charger_type"><option>Supercharger</option><option>DC სწრაფი</option><option>AC</option><option>Destination Charger</option></select></div><div class="field"><label>სიმძლავრე (kW)</label><input name="power_kw" type="number" min="0" step="0.1"></div>
+      <div class="field"><label>კონექტორები — მძიმით გამოყავი</label><input name="connector_types" placeholder="Tesla, CCS2, Type 2"></div><div class="field"><label>პორტების რაოდენობა</label><input name="ports" type="number" min="1" value="1" required></div>
+      <div class="field"><label>ოპერატორი</label><input name="operator"></div><div class="field"><label>სამუშაო საათები</label><input name="working_hours" value="24/7"></div>
+      <div class="field wide"><label>ფასის ინფორმაცია</label><input name="price_info" placeholder="მაგ. ₾0.80 / kWh ან უფასო"></div><div class="field wide"><label>შენიშვნა</label><textarea name="notes"></textarea></div>
+    </div>
+    <label class="checkbox"><input name="is_active" type="checkbox" checked> რუკაზე გამოჩნდეს</label><p class="form-message" data-message></p><button class="button admin-submit" type="submit">შენახვა</button>
+  </form></div>
+</body></html>

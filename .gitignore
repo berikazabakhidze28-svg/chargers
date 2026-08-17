@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.vercel
+node_modules
+map/data/tiles/
+map/TN.RoadTransportNetwork.RoadLink.*
+map/route.php
+map/tools/
+.vscode/
+**/.DS_Store
+.map-git-backup/
+supabase.md
