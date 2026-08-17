@@ -22,17 +22,17 @@
 }
 .map-home span { font-size: 1rem; }
 .map-home b { font-size: .58rem; }
-body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
+body:has(.route-card:not([hidden])) .map-home { right: 350px; bottom: 18px; }
 
 .route-card {
   left: auto;
   right: 18px;
   bottom: 18px;
   transform: none;
-  width: min(430px, calc(100vw - 24px));
-  padding: 19px 24px 18px;
+  width: min(320px, calc(100vw - 24px));
+  padding: 14px 17px;
   border: 0;
-  border-radius: 20px;
+  border-radius: 14px;
   background: rgba(43, 45, 49, .94);
   box-shadow: 0 14px 38px rgba(0, 0, 0, .28);
   display: block;
@@ -47,9 +47,9 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 286px;
-  padding: 16px 22px;
-  border-radius: 18px;
+  min-width: 240px;
+  padding: 11px 15px;
+  border-radius: 13px;
   background: rgba(43, 45, 49, .94);
   color: #fff;
   box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
@@ -58,15 +58,15 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
   gap: 17px;
   backdrop-filter: blur(16px);
 }
-.maneuver-arrow { width: 50px; height: 50px; border-radius: 8px; background: #1760bd; display: grid; place-items: center; font-size: 2rem; }
+.maneuver-arrow { width: 42px; height: 42px; border-radius: 7px; background: #1760bd; display: grid; place-items: center; font-size: 1.6rem; }
 .maneuver-card strong,.maneuver-card small { display: block; }
-.maneuver-card strong { font-size: 1.45rem; }
+.maneuver-card strong { font-size: 1.05rem; }
 .maneuver-card small { max-width: 220px; margin-top: 3px; overflow: hidden; color: #d0d0d0; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
 .route-destination {
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 9px;
   color: #f5f5f5;
-  font-size: .78rem;
+  font-size: .68rem;
   font-weight: 700;
   text-align: center;
   text-overflow: ellipsis;
@@ -74,12 +74,16 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
 }
 .route-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .route-stats div { text-align: center; }
-.route-card .route-stats strong { margin: 0; font-size: 1.35rem; line-height: 1.1; }
+.route-card .route-stats strong { margin: 0; font-size: 1rem; line-height: 1.1; }
 .route-card .route-stats small { margin-top: 3px; color: #aaa; font-size: .61rem; font-weight: 800; letter-spacing: .06em; }
-.route-actions { display: grid; grid-template-columns: 1fr 58px; gap: 12px; margin-top: 18px; }
-.route-card .route-actions button { height: 54px; margin: 0; border: 0; border-radius: 12px; font: inherit; font-size: 1rem; font-weight: 900; }
+.route-actions { display: grid; grid-template-columns: 1fr 42px; gap: 8px; margin-top: 12px; }
+.route-card .route-actions button { height: 40px; margin: 0; border: 0; border-radius: 8px; font: inherit; font-size: .8rem; font-weight: 900; }
 .route-card #routeGo { background: #24cf3d; color: #030503; }
 .route-card #routeClose { background: linear-gradient(145deg, #55575d, #35363b); color: #fff; font-size: 1.35rem; }
+.route-card.running { width: 270px; padding-right: 54px; }
+.route-card.running .route-actions { position: absolute; right: 10px; bottom: 10px; display: block; margin: 0; }
+.route-card.running #routeGo { display: none; }
+.route-card.running #routeClose { width: 36px; height: 36px; }
 
 @media (max-width: 850px) {
   .route-card { top: auto; right: 10px; bottom: 10px; padding: 15px 18px; }
@@ -89,7 +93,7 @@ body:has(.route-card:not([hidden])) .map-home { bottom: 238px; }
   .charger-panel { top: 10px; }
   .map-home { right: 10px; bottom: 10px; width: 44px; min-width: 44px; height: 44px; padding: 0; }
   .map-home b { display: none; }
-  body:has(.route-card:not([hidden])) .map-home { bottom: 216px; }
+  body:has(.route-card:not([hidden])) .map-home { right: 10px; bottom: 190px; }
 }
 
 .map-controls { gap: 6px; }
