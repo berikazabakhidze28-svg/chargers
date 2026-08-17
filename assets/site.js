@@ -1,5 +1,6 @@
 const menuButton = document.querySelector('.menu-button');
 const navigation = document.querySelector('.main-nav');
+document.querySelectorAll('.header-cta[href="/map/"],.quick-links a[href="/map/"],.map-preview[href="/map/"]').forEach(link=>link.href='/chargers/');
 menuButton?.addEventListener('click', () => {
   const isOpen = navigation.classList.toggle('open');
   menuButton.setAttribute('aria-expanded', String(isOpen));
@@ -29,4 +30,4 @@ if (location.pathname === '/' || location.pathname === '/index.html') {
     document.body.appendChild(productsScript);
   }
 }
-if(!document.querySelector('script[data-chargerx-i18n]')){const i18n=document.createElement('script');i18n.src='/assets/i18n.js?v=3';i18n.dataset.chargerxI18n='';document.head.append(i18n)}
+if(!document.querySelector('script[data-chargerx-i18n]')){const i18n=document.createElement('script');i18n.src='/assets/i18n.js?v=4';i18n.dataset.chargerxI18n='';document.head.append(i18n)}

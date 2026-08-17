@@ -1,0 +1,27 @@
+.charger-map-page { overflow: hidden; }
+.charger-map-shell { position: relative; height: calc(100dvh - 78px); }
+#chargersMap { position: absolute; inset: 0; }
+.charger-map-panel { position: absolute; z-index: 5; top: 18px; left: 18px; bottom: 18px; width: 370px; display: flex; flex-direction: column; overflow: hidden; padding: 20px; border: 1px solid #ffffff20; border-radius: 14px; background: #101417ed; box-shadow: 0 16px 45px #0007; backdrop-filter: blur(16px); }
+.charger-map-heading { display: flex; align-items: center; justify-content: space-between; }
+.charger-map-heading small { color: #e82127; font-size: .58rem; letter-spacing: .15em; }
+.charger-map-heading h1 { margin: 4px 0 0; font-size: 1.55rem; }
+#chargerLocate { width: 48px; height: 48px; border: 1px solid #ffffff25; border-radius: 50%; background: #20262a; color: #fff; font-size: 1.35rem; cursor: pointer; }
+#chargerMapStatus { margin: 16px 0 12px; color: #9da4a9; font-size: .7rem; }
+.nearest-charger { margin-bottom: 12px; padding: 15px; border: 1px solid #287cf577; border-radius: 10px; background: #287cf51c; }
+.nearest-charger small,.nearest-charger strong,.nearest-charger span { display: block; }
+.nearest-charger small { color: #70a9ff; font-size: .59rem; font-weight: 800; letter-spacing: .08em; }
+.nearest-charger strong { margin: 5px 0; font-size: .87rem; }
+.nearest-charger span { color: #b6bdc2; font-size: .66rem; }
+.charger-locations { overflow: auto; }
+.charger-location { width: 100%; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 10px; padding: 13px 4px; border: 0; border-bottom: 1px solid #ffffff12; background: transparent; color: #fff; text-align: left; cursor: pointer; }
+.charger-location i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: #e8212722; color: #e82127; font-style: normal; }
+.charger-location strong,.charger-location small { display: block; }
+.charger-location strong { font-size: .74rem; }
+.charger-location small { max-width: 205px; margin-top: 4px; overflow: hidden; color: #969da2; font-size: .59rem; text-overflow: ellipsis; white-space: nowrap; }
+.charger-location b { color: #cbd0d3; font-size: .65rem; }
+.charger-map-marker { width: 36px; height: 36px; display: grid; place-items: center; border: 3px solid #fff; border-radius: 50% 50% 50% 8px; background: #e82127; color: #fff; transform: rotate(-45deg); box-shadow: 0 6px 18px #0008; }
+.charger-map-marker span { transform: rotate(45deg); }
+.charger-user-marker { width: 22px; height: 22px; border: 4px solid #fff; border-radius: 50%; background: #287cf5; box-shadow: 0 0 0 8px #287cf533; }
+.charger-popup strong,.charger-popup span { display: block; color: #111; }
+.charger-popup span { margin-top: 4px; font-size: 11px; }
+@media(max-width:850px){.charger-map-shell{height:calc(100dvh - 66px)}.charger-map-panel{top:auto;right:10px;bottom:10px;left:10px;width:auto;max-height:42vh;padding:14px}.charger-map-heading h1{font-size:1.2rem}.nearest-charger{padding:10px}.charger-locations{max-height:150px}}

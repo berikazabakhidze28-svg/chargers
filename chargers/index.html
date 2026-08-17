@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#0b0d0f">
+  <title>დამტენების რუკა — ChargerX</title>
+  <link rel="icon" href="/logo-mark.png">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/charger-map.css?v=1">
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script defer src="/assets/supabase-config.js"></script>
+  <script defer src="/assets/site.js"></script>
+  <script defer src="/assets/charger-map.js?v=1"></script>
+</head>
+<body class="charger-map-page">
+  <header class="site-header">
+    <a class="brand" href="/"><img src="/logo-mark.png" alt=""><span>CHARGER<b>X</b></span></a>
+    <button class="menu-button" aria-expanded="false">მენიუ</button>
+    <nav class="main-nav"><a href="/">მთავარი</a><a href="/shop/">მაღაზია</a><a class="active" href="/chargers/">დამტენები</a><a href="/map/">ნავიგაცია</a><a href="/contact/">კონტაქტი</a></nav>
+  </header>
+  <main class="charger-map-shell">
+    <div id="chargersMap" aria-label="დამტენების რუკა"></div>
+    <aside class="charger-map-panel">
+      <div class="charger-map-heading"><div><small>CHARGING NETWORK</small><h1>დამტენები</h1></div><button id="chargerLocate" aria-label="ჩემი მდებარეობა">⌖</button></div>
+      <p id="chargerMapStatus">ლოკაციები იტვირთება…</p>
+      <div id="nearestCharger" class="nearest-charger" hidden></div>
+      <div id="chargerLocations" class="charger-locations"></div>
+    </aside>
+  </main>
+</body>
+</html>
