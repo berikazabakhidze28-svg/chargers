@@ -7,6 +7,8 @@ map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-left');
 
 let chargers=[],markers=[],selected=null,userLocation=null,userMarker=null,is3d=false,routeActive=false,searchMarker=null,searchTimer=null;
 let trackingStarted=false,lastTrackPoint=null,firstGpsFix=true;
+let naprEnabled=false,naprUpdateTimer=null;
+const NAPR_WMS='https://gpv0.napr.gov.ge/inspirevs/napr_ad/ows';
 const $=id=>document.getElementById(id);
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const km=value=>value<1000?`${Math.round(value)} მ`:`${(value/1000).toFixed(value<10000?1:0)} კმ`;
@@ -47,6 +49,26 @@ async function buildRoute(){if(!selected)return;if(!userLocation){toast('ჯე�
 function set3d(enabled){is3d=enabled;$('mode3d').setAttribute('aria-pressed',String(enabled));localStorage.setItem('chargerx-map-3d',String(enabled));if(enabled){if(map.getSource('terrain-dem'))map.setTerrain({source:'terrain-dem',exaggeration:1.15});map.easeTo({pitch:55,bearing:-12,duration:800})}else{map.setTerrain(null);map.easeTo({pitch:0,bearing:0,duration:700})}}
 function add3dLayers(){if(!map.getSource('terrain-dem'))map.addSource('terrain-dem',{type:'raster-dem',url:'https://tiles.mapterhorn.com/tilejson.json',tileSize:512,maxzoom:14});const vectorSource=Object.entries(map.getStyle().sources).find(([,source])=>source.type==='vector')?.[0];if(vectorSource&&!map.getLayer('chargerx-3d-buildings')){try{map.addLayer({id:'chargerx-3d-buildings',source:vectorSource,'source-layer':'building',type:'fill-extrusion',minzoom:14,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','render_height'],0,'#d9dde0',80,'#aeb7bd'],'fill-extrusion-height':['coalesce',['get','render_height'],['get','height'],8],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.78}})}catch(error){console.warn('3D buildings layer unavailable',error)}}if(localStorage.getItem('chargerx-map-3d')==='true')set3d(true)}
 
+function naprImage(){
+  const bounds=map.getBounds(),west=bounds.getWest(),south=bounds.getSouth(),east=bounds.getEast(),north=bounds.getNorth();
+  const width=Math.min(1400,Math.max(512,Math.round(map.getCanvas().clientWidth*window.devicePixelRatio)));
+  const height=Math.min(1400,Math.max(512,Math.round(map.getCanvas().clientHeight*window.devicePixelRatio)));
+  const params=new URLSearchParams({service:'WMS',version:'1.3.0',request:'GetMap',layers:'napr_ad:AD.NamedStreets,napr_ad:AD.Address',styles:'',crs:'CRS:84',bbox:`${west},${south},${east},${north}`,width:String(width),height:String(height),format:'image/png',transparent:'true'});
+  return{url:`${NAPR_WMS}?${params}`,coordinates:[[west,north],[east,north],[east,south],[west,south]]};
+}
+function updateNaprOverlay(){
+  if(!naprEnabled||!map.loaded())return;
+  const image=naprImage(),source=map.getSource('napr-addresses');
+  if(source){source.updateImage(image);return}
+  map.addSource('napr-addresses',{type:'image',...image});
+  map.addLayer({id:'napr-addresses-layer',type:'raster',source:'napr-addresses',paint:{'raster-opacity':.82,'raster-fade-duration':0}},map.getLayer('active-route-line')?'active-route-line':undefined);
+}
+function setNapr(enabled){
+  naprEnabled=enabled;$('naprLayer').setAttribute('aria-pressed',String(enabled));$('naprCredit').hidden=!enabled;localStorage.setItem('chargerx-map-napr',String(enabled));
+  if(map.getLayer('napr-addresses-layer'))map.setLayoutProperty('napr-addresses-layer','visibility',enabled?'visible':'none');
+  if(enabled)updateNaprOverlay();
+}
+
 function addressTitle(result){return result.poi?.name||[result.address?.streetName,result.address?.streetNumber].filter(Boolean).join(' ')||result.address?.freeformAddress||'მისამართი'}
 function addressSubtitle(result){return result.address?.freeformAddress||[result.address?.municipality,result.address?.country].filter(Boolean).join(', ')}
 function renderAddressResults(results){const origin=userLocation||{lat:41.7151,lng:44.8271},ranked=[...results].sort((a,b)=>distance(origin,{lat:Number(a.position.lat),lng:Number(a.position.lon)})-distance(origin,{lat:Number(b.position.lat),lng:Number(b.position.lon)}));const root=$('addressResults');root.hidden=false;root.innerHTML=ranked.length?ranked.map((result,index)=>`<button class="address-result" data-address-result="${index}"><span>⌖</span><div><strong>${escapeHtml(addressTitle(result))}</strong><small>${escapeHtml(addressSubtitle(result))}</small></div></button>`).join(''):'<div class="address-empty">მისამართი ვერ მოიძებნა.</div>';root._results=ranked}
@@ -55,8 +77,11 @@ function chooseAddress(result){const lat=Number(result.position.lat),lng=Number(
 
 map.on('load',()=>{map.addSource('active-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:[]},properties:{}}});map.addLayer({id:'active-route-line',type:'line',source:'active-route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#e82127','line-width':7,'line-opacity':.95}});add3dLayers();$('networkStatus').textContent='ნავიგაცია მზად არის'});
 map.on('load',startSpeedTracking);
+map.on('load',()=>setNapr(localStorage.getItem('chargerx-map-napr')==='true'));
+map.on('moveend',()=>{if(!naprEnabled)return;clearTimeout(naprUpdateTimer);naprUpdateTimer=setTimeout(updateNaprOverlay,250)});
 $('chargerList').addEventListener('click',event=>{const item=event.target.closest('[data-charger]');if(item)selectCharger(chargers.find(x=>x.id===Number(item.dataset.charger)),true)});
 $('addressSearch').addEventListener('input',event=>{clearTimeout(searchTimer);const query=event.target.value.trim();if(query.length<2){$('addressResults').hidden=true;return}searchTimer=setTimeout(()=>searchAddress(query),420)});
 $('addressResults').addEventListener('click',event=>{const button=event.target.closest('[data-address-result]');if(button)chooseAddress($('addressResults')._results[Number(button.dataset.addressResult)])});
 document.addEventListener('click',event=>{if(!event.target.closest('.address-search-wrap'))$('addressResults').hidden=true});
+$('naprLayer').onclick=()=>setNapr(!naprEnabled);
 $('panelToggle').onclick=()=>{const closed=$('chargerPanel').classList.toggle('closed');$('panelToggle').setAttribute('aria-label',closed?'პანელის გახსნა':'პანელის დამალვა')};$('locateButton').onclick=()=>locateUser();$('sortNearest').onclick=()=>locateUser();$('mode3d').onclick=()=>set3d(!is3d);$('resetNorth').onclick=()=>map.easeTo({bearing:0,pitch:is3d?55:0});$('detailClose').onclick=()=>{$('chargerDetail').hidden=true;selected=null;markers.forEach(x=>x.element.classList.remove('active'));renderList()};$('routeButton').onclick=buildRoute;$('routeClose').onclick=()=>{map.getSource('active-route')?.setData({type:'Feature',geometry:{type:'LineString',coordinates:[]},properties:{}});routeActive=false;$('routeCard').hidden=true};
