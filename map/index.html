@@ -8,10 +8,10 @@
   <title>დამტენების რუკა — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/map/tesla-map.css?v=10"><link rel="stylesheet" href="/map/address-search.css?v=10"><link rel="stylesheet" href="/map/navigation-mode.css?v=10"><link rel="stylesheet" href="/map/napr-overlay.css?v=10"><link rel="stylesheet" href="/map/route-card.css?v=10">
+  <link rel="stylesheet" href="/map/tesla-map.css?v=11"><link rel="stylesheet" href="/map/address-search.css?v=11"><link rel="stylesheet" href="/map/navigation-mode.css?v=11"><link rel="stylesheet" href="/map/napr-overlay.css?v=11"><link rel="stylesheet" href="/map/route-card.css?v=11">
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script defer src="/assets/supabase-config.js"></script>
-  <script defer src="/map/tesla-map.js?v=10"></script>
+  <script defer src="/map/tesla-map.js?v=11"></script>
 </head>
 <body>
   <div id="map" aria-label="დამტენების რუკა"></div>
@@ -36,6 +36,7 @@
     <button id="mode3d" aria-pressed="false"><b>3D</b></button>
     <button id="locateButton"><span>⌖</span></button>
     <button id="resetNorth"><span>↑</span><b>ჩრდილოეთი</b></button>
+    <button id="darkMode" aria-pressed="false"><span>☾</span><b>ღამის რეჟიმი</b></button>
   </div>
 
   <div class="speed-display" id="speedDisplay"><span class="speed-dot"></span><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
@@ -63,6 +64,6 @@
     <div class="route-actions"><button id="routeGo">GO</button><button id="routeClose" aria-label="მარშრუტის დახურვა">×</button></div>
   </div>
   <div class="map-toast" id="mapToast" hidden></div>
-  <a class="map-home" href="/" aria-label="რუკიდან გასვლა"><span>←</span><b>EXIT</b></a>
+  <a class="map-home" href="/" aria-label="რუკიდან გასვლა"><b>EXIT</b></a>
 </body>
 </html>
