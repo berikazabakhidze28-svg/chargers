@@ -1,4 +1,4 @@
-let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,watchId,currentStepIndex=0;
+let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,watchId,currentStepIndex=0,hasInitialFocus=false;
 let darkMode=false;
 const defaultCenter={lat:41.7151,lng:44.8271};
 const darkStyles=[{elementType:'geometry',stylers:[{color:'#152541'}]},{elementType:'labels.text.fill',stylers:[{color:'#ffffff'}]},{elementType:'labels.text.stroke',stylers:[{color:'#152541'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#3E5A77'}]},{featureType:'poi',elementType:'geometry',stylers:[{color:'#1B3B69'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];
@@ -38,6 +38,7 @@ function watchLocation(){
     document.getElementById('speedValue').textContent=Math.max(0,Math.round((position.coords.speed||0)*3.6));
     if(userMarker)userMarker.setPosition(currentPosition);else userMarker=new google.maps.Marker({map,position:currentPosition,title:'ჩემი მდებარეობა',icon:{path:google.maps.SymbolPath.FORWARD_CLOSED_ARROW,scale:7,fillColor:'#1a73e8',fillOpacity:1,strokeColor:'#fff',strokeWeight:2,rotation:position.coords.heading||0}});
     if(userMarker?.getIcon()){const icon=userMarker.getIcon();icon.rotation=position.coords.heading||0;userMarker.setIcon(icon)}
+    if(!hasInitialFocus){hasInitialFocus=true;map.panTo(currentPosition);map.setZoom(17)}
     if(document.body.classList.contains('navigating')){map.panTo(currentPosition);updateManeuver()}
   },()=>message('ჩართეთ მდებარეობაზე წვდომა'),{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
