@@ -1,5 +1,5 @@
-let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,watchId,currentStepIndex=0,hasInitialFocus=false;
-let darkMode=false;
+let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,watchId,currentStepIndex=0,hasInitialFocus=false,trafficLayer;
+let darkMode=false,is3d=false,trafficVisible=false;
 const defaultCenter={lat:41.7151,lng:44.8271};
 const darkStyles=[{elementType:'geometry',stylers:[{color:'#152541'}]},{elementType:'labels.text.fill',stylers:[{color:'#ffffff'}]},{elementType:'labels.text.stroke',stylers:[{color:'#152541'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#3E5A77'}]},{featureType:'poi',elementType:'geometry',stylers:[{color:'#1B3B69'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];
 const message=text=>{const el=document.getElementById('mapMessage');el.textContent=text;el.hidden=false;clearTimeout(message.timer);message.timer=setTimeout(()=>el.hidden=true,3500)};
@@ -17,7 +17,8 @@ async function loadGoogleMaps(){
 }
 
 window.initGoogleMap=function(){
-  map=new google.maps.Map(document.getElementById('map'),{center:defaultCenter,zoom:13,disableDefaultUI:true,gestureHandling:'greedy'});
+  map=new google.maps.Map(document.getElementById('map'),{center:defaultCenter,zoom:13,disableDefaultUI:true,gestureHandling:'greedy',isFractionalZoomEnabled:true,renderingType:google.maps.RenderingType.VECTOR,headingInteractionEnabled:true,tiltInteractionEnabled:true});
+  trafficLayer=new google.maps.TrafficLayer();
   directionsService=new google.maps.DirectionsService();
   directionsRenderer=new google.maps.DirectionsRenderer({map,polylineOptions:{strokeColor:'#1a73e8',strokeWeight:8}});
   autocomplete=new google.maps.places.Autocomplete(document.getElementById('destination'),{componentRestrictions:{country:'ge'},fields:['geometry','formatted_address','name']});
@@ -26,6 +27,8 @@ window.initGoogleMap=function(){
   document.getElementById('routeForm').addEventListener('submit',event=>{event.preventDefault();const place=autocomplete.getPlace();if(place.geometry?.location)buildRoute(place.geometry.location);else message('აირჩიეთ მისამართი Google-ის შედეგებიდან')});
   document.getElementById('locateButton').addEventListener('click',()=>focusLocation());
   document.getElementById('themeButton').addEventListener('click',toggleTheme);
+  document.getElementById('mode3dButton').addEventListener('click',toggle3d);
+  document.getElementById('trafficButton').addEventListener('click',toggleTraffic);
   document.getElementById('startRoute').addEventListener('click',startNavigation);
   document.getElementById('closeRoute').addEventListener('click',clearRoute);
   watchLocation();
@@ -58,6 +61,8 @@ function updateManeuver(){
   document.getElementById('maneuverDistance').textContent=distance?`${Math.round(distance)} მ`:(step.distance?.text||'—');document.getElementById('maneuverText').textContent=step.instructions.replace(/<[^>]+>/g,' ');
   document.getElementById('maneuverArrow').textContent=/left/i.test(step.maneuver||'')?'←':/right/i.test(step.maneuver||'')?'→':'↑';
 }
-function toggleTheme(){darkMode=!darkMode;map.setOptions({styles:darkMode?darkStyles:null});document.getElementById('themeButton').textContent=darkMode?'☀':'☾'}
+function toggleTheme(){darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);map.setOptions({styles:darkMode?darkStyles:null});document.getElementById('themeButton').textContent=darkMode?'☀':'☾'}
+function toggle3d(){is3d=!is3d;if(is3d&&map.getZoom()<18)map.setZoom(18);map.setTilt(is3d?60:0);document.getElementById('mode3dButton').classList.toggle('active',is3d)}
+function toggleTraffic(){trafficVisible=!trafficVisible;trafficLayer.setMap(trafficVisible?map:null);document.getElementById('trafficButton').classList.toggle('active',trafficVisible)}
 function clearRoute(){directionsRenderer.set('directions',null);currentLeg=null;currentStepIndex=0;document.body.classList.remove('navigating');document.getElementById('routeSummary').hidden=true;document.getElementById('maneuver').hidden=true;document.getElementById('destination').value=''}
 loadGoogleMaps();
