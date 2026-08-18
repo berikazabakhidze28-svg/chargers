@@ -1,71 +1,41 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ka">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#0b0d0f">
-  <meta name="description" content="Tesla-სა და ელექტრომობილების დამტენების რუკა საქართველოში.">
-  <title>დამტენების რუკა — ChargerX</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="ChargerX Google Maps ნავიგაცია">
+  <title>ნავიგაცია — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/map/tesla-map.css?v=18"><link rel="stylesheet" href="/map/address-search.css?v=18"><link rel="stylesheet" href="/map/navigation-mode.css?v=18"><link rel="stylesheet" href="/map/napr-overlay.css?v=18"><link rel="stylesheet" href="/map/route-card.css?v=18">
-  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <link rel="stylesheet" href="/map/google-map.css?v=1">
   <script defer src="/assets/supabase-config.js"></script>
-  <script defer src="/assets/i18n.js?v=4"></script>
-  <script defer src="/map/tesla-map.js?v=18"></script>
+  <script defer src="/map/google-map.js?v=2"></script>
 </head>
 <body>
-  <div id="map" aria-label="დამტენების რუკა"></div>
-
-  <header class="map-header">
-    <a class="map-brand" href="/"><img src="/logo-mark.png" alt=""><span>CHARGER<b>X</b></span></a>
-    <div class="map-status"><i></i><span id="networkStatus">რუკა მზად არის</span></div>
-    <nav><a href="/">მაღაზია</a></nav>
-  </header>
-
-  <aside class="charger-panel" id="chargerPanel">
-    <div class="panel-head"><div><small>CHARGING NETWORK</small><h1>დამტენები</h1></div><button id="panelToggle" aria-label="პანელის დამალვა">‹</button></div>
-    <div class="address-search-wrap"><label class="charger-search"><span>⌕</span><input id="addressSearch" type="search" autocomplete="off" placeholder="მისამართის ძიება…"></label><div class="address-results" id="addressResults" hidden></div></div>
-    <div class="list-meta"><span id="chargerCount">0 დამტენი</span><button id="sortNearest">უახლოესი</button></div>
-    <div class="charger-list" id="chargerList"><div class="list-loading">ლოკაციები იტვირთება…</div></div>
-  </aside>
-
-  <div class="napr-credit" id="naprCredit" hidden>© საჯარო რეესტრის ეროვნული სააგენტო</div>
-
-  <div class="map-controls">
-    <button id="naprLayer" aria-pressed="false"><b>NAPR</b></button>
-    <button id="mode3d" aria-pressed="false"><b>3D</b></button>
-    <button id="locateButton" aria-label="ჩემი მდებარეობა"><img src="/pic/compass.png" alt=""></button>
-    <button id="resetNorth" aria-label="ჩრდილოეთის გადატვირთვა"><b>N</b></button>
-    <button id="darkMode" aria-pressed="false"><span>☾</span></button>
-  </div>
-
-  <div class="speed-display" id="speedDisplay"><span class="speed-dot"></span><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
-
-  <div class="maneuver-card" id="maneuverCard" hidden>
-    <span class="maneuver-arrow" id="maneuverArrow">➜</span>
-    <div><strong id="maneuverDistance">—</strong><small id="maneuverInstruction">გააგრძელეთ მარშრუტზე</small></div>
-  </div>
-
-  <section class="charger-detail" id="chargerDetail" hidden>
-    <button class="detail-close" id="detailClose" aria-label="დახურვა">×</button>
-    <small id="detailType">დამტენი</small><h2 id="detailName">—</h2><p id="detailAddress">—</p>
-    <div class="detail-stats"><div><b id="detailPower">—</b><span>სიმძლავრე</span></div><div><b id="detailPorts">—</b><span>პორტი</span></div><div><b id="detailHours">—</b><span>საათები</span></div></div>
-    <p class="connector-line" id="detailConnectors"></p><p class="price-line" id="detailPrice"></p>
-    <div class="detail-actions"><button id="routeButton">მარშრუტი</button><a id="externalRoute" target="_blank" rel="noopener">Google Maps ↗</a></div>
-  </section>
-
-  <div class="route-card" id="routeCard" hidden>
-    <div class="route-destination" id="routeDestination">დანიშნულების ადგილი</div>
-    <div class="route-stats">
-      <div><strong id="routeDistance">—</strong><small>DIST</small></div>
-      <div><strong id="routeDuration">—</strong><small>TIME</small></div>
-      <div><strong id="routeArrival">—</strong><small>ARRIVE</small></div>
+  <main id="map" aria-label="Google Maps ნავიგაცია"></main>
+  <form class="search-panel" id="routeForm">
+    <label for="destination">დანიშნულების ადგილი</label>
+    <div class="search-row">
+      <input id="destination" type="search" autocomplete="off" placeholder="მოძებნეთ მისამართი…" required>
+      <button type="submit" aria-label="მარშრუტის აგება">➜</button>
     </div>
-    <div class="route-actions"><button id="routeGo">GO</button><button id="routeClose" aria-label="მარშრუტის დახურვა">×</button></div>
+  </form>
+  <section class="route-summary" id="routeSummary" hidden>
+    <div><small>მანძილი</small><strong id="routeDistance">—</strong></div>
+    <div><small>დრო</small><strong id="routeDuration">—</strong></div>
+    <button class="start-route" id="startRoute" type="button">GO</button>
+    <button id="closeRoute" type="button" aria-label="მარშრუტის დახურვა">×</button>
+  </section>
+  <section class="maneuver" id="maneuver" hidden>
+    <span id="maneuverArrow">↑</span>
+    <div><strong id="maneuverDistance">—</strong><small id="maneuverText">გააგრძელეთ მარშრუტზე</small></div>
+  </section>
+  <div class="speed" id="speed"><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
+  <div class="map-actions">
+    <button id="locateButton" type="button" aria-label="ჩემი მდებარეობა">◎</button>
+    <button id="themeButton" type="button" aria-label="ღამის რეჟიმი">☾</button>
+    <a href="/" aria-label="გასვლა">EXIT</a>
   </div>
-  <div class="map-toast" id="mapToast" hidden></div>
-  <a class="map-home" href="/" aria-label="რუკიდან გასვლა"><b>EXIT</b></a>
+  <div class="map-message" id="mapMessage" hidden></div>
 </body>
 </html>
-
