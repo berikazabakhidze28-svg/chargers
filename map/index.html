@@ -7,9 +7,9 @@
   <meta name="description" content="ChargerX Google Maps ნავიგაცია">
   <title>ნავიგაცია — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
-  <link rel="stylesheet" href="/map/google-map.css?v=2">
+  <link rel="stylesheet" href="/map/google-map.css?v=7">
   <script defer src="/assets/supabase-config.js"></script>
-  <script defer src="/map/google-map.js?v=4"></script>
+  <script defer src="/map/google-map.js?v=11"></script>
 </head>
 <body>
   <main id="map" aria-label="Google Maps ნავიგაცია"></main>
@@ -21,23 +21,36 @@
     </div>
   </form>
   <section class="route-summary" id="routeSummary" hidden>
-    <div><small>მანძილი</small><strong id="routeDistance">—</strong></div>
-    <div><small>დრო</small><strong id="routeDuration">—</strong></div>
+    <div><strong id="routeArrival">—</strong><small>მისვლა</small></div>
+    <div><strong id="routeDuration">—</strong><small>დრო</small></div>
+    <div><strong id="routeDistance">—</strong><small>მანძილი</small></div>
     <button class="start-route" id="startRoute" type="button">GO</button>
     <button id="closeRoute" type="button" aria-label="მარშრუტის დახურვა">×</button>
   </section>
   <section class="maneuver" id="maneuver" hidden>
     <span id="maneuverArrow">↑</span>
-    <div><strong id="maneuverDistance">—</strong><small id="maneuverText">გააგრძელეთ მარშრუტზე</small></div>
+    <div><strong id="maneuverDistance">—</strong><b id="maneuverText">გააგრძელეთ მარშრუტზე</b><small id="maneuverNext">შემდეგ გააგრძელეთ მარშრუტზე</small></div>
   </section>
   <div class="speed" id="speed"><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
   <div class="map-actions">
-    <button id="locateButton" type="button" aria-label="ჩემი მდებარეობა">◎</button>
+    <button id="locateButton" type="button" aria-label="ჩემი მდებარეობა"><img id="locateIcon" alt=""></button>
     <button id="mode3dButton" type="button" aria-label="3D რუკა">3D</button>
     <button id="trafficButton" type="button" aria-label="საცობების ჩვენება">🚦</button>
     <button id="themeButton" type="button" aria-label="ღამის რეჟიმი">☾</button>
+    <button id="markerPickerButton" type="button" aria-label="ლოკაციის ნიშნულის არჩევა" aria-expanded="false">🚘</button>
     <a href="/" aria-label="გასვლა">EXIT</a>
   </div>
+  <aside class="marker-picker" id="markerPicker" aria-label="ლოკაციის ნიშნულის არჩევა" hidden>
+    <strong>ნიშნული</strong>
+    <div class="marker-options">
+      <button type="button" data-marker="arrow" title="ისარი">➤</button>
+      <button type="button" data-marker="model-s" title="Model S">S</button>
+      <button type="button" data-marker="model-3" title="Model 3">3</button>
+      <button type="button" data-marker="model-x" title="Model X">X</button>
+      <button type="button" data-marker="model-y" title="Model Y">Y</button>
+    </div>
+    <label class="marker-color">ფერი <input id="markerColor" type="color" value="#e82127" aria-label="ნიშნულის ფერი"></label>
+  </aside>
   <div class="map-message" id="mapMessage" hidden></div>
 </body>
 </html>
