@@ -7,24 +7,26 @@
   <meta name="description" content="ChargerX Google Maps ნავიგაცია">
   <title>ნავიგაცია — ChargerX</title>
   <link rel="icon" href="/logo-mark.png">
-  <link rel="stylesheet" href="/map/google-map.css?v=7">
+  <link rel="stylesheet" href="/map/google-map.css?v=14">
   <script defer src="/assets/supabase-config.js"></script>
-  <script defer src="/map/google-map.js?v=11"></script>
+  <script defer src="/map/google-map.js?v=28"></script>
 </head>
 <body>
   <main id="map" aria-label="Google Maps ნავიგაცია"></main>
   <form class="search-panel" id="routeForm">
-    <label for="destination">დანიშნულების ადგილი</label>
     <div class="search-row">
       <input id="destination" type="search" autocomplete="off" placeholder="მოძებნეთ მისამართი…" required>
       <button type="submit" aria-label="მარშრუტის აგება">➜</button>
     </div>
   </form>
   <section class="route-summary" id="routeSummary" hidden>
+    <h2 id="routeDestination">დანიშნულების ადგილი</h2>
     <div><strong id="routeArrival">—</strong><small>მისვლა</small></div>
     <div><strong id="routeDuration">—</strong><small>დრო</small></div>
     <div><strong id="routeDistance">—</strong><small>მანძილი</small></div>
-    <button class="start-route" id="startRoute" type="button">GO</button>
+    <button class="more-routes" id="moreRoutes" type="button">სხვა მარშრუტები</button>
+    <div class="route-options" id="routeOptions" hidden></div>
+    <button class="start-route" id="startRoute" type="button">START</button>
     <button id="closeRoute" type="button" aria-label="მარშრუტის დახურვა">×</button>
   </section>
   <section class="maneuver" id="maneuver" hidden>
@@ -32,7 +34,9 @@
     <div><strong id="maneuverDistance">—</strong><b id="maneuverText">გააგრძელეთ მარშრუტზე</b><small id="maneuverNext">შემდეგ გააგრძელეთ მარშრუტზე</small></div>
   </section>
   <div class="speed" id="speed"><strong id="speedValue">0</strong><small>კმ/სთ</small></div>
+  <div class="heading-badge" id="headingBadge"><span id="headingValue">N</span></div>
   <div class="map-actions">
+    <button class="recenter-button" id="recenterButton" type="button" aria-label="მანქანაზე დაბრუნება" hidden>⌖</button>
     <button id="locateButton" type="button" aria-label="ჩემი მდებარეობა"><img id="locateIcon" alt=""></button>
     <button id="mode3dButton" type="button" aria-label="3D რუკა">3D</button>
     <button id="trafficButton" type="button" aria-label="საცობების ჩვენება">🚦</button>
