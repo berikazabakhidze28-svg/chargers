@@ -1,6 +1,14 @@
+const siteHeader = document.querySelector('.site-header');
+if (siteHeader && !document.querySelector('.site-topbar')) {
+  const topbar = document.createElement('div');
+  topbar.className = 'site-topbar';
+  topbar.setAttribute('aria-label', 'საკონტაქტო ინფორმაცია');
+  topbar.innerHTML = '<a href="tel:+995551546446">☎ <span>+995 551 54 64 46</span></a><a href="mailto:info@chargerx.ge">✉ <span>info@chargerx.ge</span></a>';
+  siteHeader.before(topbar);
+}
 const menuButton = document.querySelector('.menu-button');
 const navigation = document.querySelector('.main-nav');
-document.querySelectorAll('.header-cta[href="/map/"],.quick-links a[href="/map/"],.map-preview[href="/map/"]').forEach(link=>link.href='/chargers/');
+document.querySelectorAll('.quick-links a[href="/map/"],.map-preview[href="/map/"]').forEach(link=>link.href='/chargers/');
 menuButton?.addEventListener('click', () => {
   const isOpen = navigation.classList.toggle('open');
   menuButton.setAttribute('aria-expanded', String(isOpen));

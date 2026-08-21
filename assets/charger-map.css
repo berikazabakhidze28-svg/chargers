@@ -25,3 +25,8 @@
 .charger-popup strong,.charger-popup span { display: block; color: #111; }
 .charger-popup span { margin-top: 4px; font-size: 11px; }
 @media(max-width:850px){.charger-map-shell{height:calc(100dvh - 66px)}.charger-map-panel{top:auto;right:10px;bottom:10px;left:10px;width:auto;max-height:42vh;padding:14px}.charger-map-heading h1{font-size:1.2rem}.nearest-charger{padding:10px}.charger-locations{max-height:150px}}
+
+/* Keep all charger panel copy readable over the dark map card. */
+.charger-map-panel{color:#fff}
+.charger-map-heading h1,.nearest-charger,.nearest-charger strong,.charger-location strong{color:#fff}
+.charger-map-panel #chargerMapStatus,.nearest-charger span,.charger-location small{color:#b8c0c7}
