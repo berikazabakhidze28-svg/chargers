@@ -1,5 +1,7 @@
 let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,currentDirectionsResult,currentRouteIndex=0,routePolylines=[],watchId,currentStepIndex=0,hasInitialFocus=false,trafficLayer,lastHeading=0,smoothedHeading=0,currentSpeedKmh=0,manualDestinationMarker,placesService,selectedPlacePosition;
-let darkMode=false,is3d=localStorage.getItem('chargerx-map-3d')==='true',trafficVisible=localStorage.getItem('chargerx-map-traffic')==='true',navigationFollowing=true;
+const timeWantsDark=()=>{const hour=new Date().getHours();return hour>=19||hour<7};
+let autoDarkMode=localStorage.getItem('chargerx-map-auto-dark')==='true';
+let darkMode=autoDarkMode?timeWantsDark():localStorage.getItem('chargerx-map-dark')==='true',is3d=localStorage.getItem('chargerx-map-3d')==='true',trafficVisible=localStorage.getItem('chargerx-map-traffic')==='true',navigationFollowing=true;
 let markerStyle=localStorage.getItem('chargerx-marker-style')||'model-3';
 let markerColor=/^#[0-9a-f]{6}$/i.test(localStorage.getItem('chargerx-marker-color')||'')?localStorage.getItem('chargerx-marker-color'):'#e82127';
 const mapLanguage=['ka','en','ru'].includes(localStorage.getItem('chargerx-language'))?localStorage.getItem('chargerx-language'):'ka';
@@ -74,6 +76,7 @@ function setupMarkerPicker(){
   toggle.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();const opening=picker.hasAttribute('hidden');picker.toggleAttribute('hidden',!opening);toggle.classList.toggle('active',opening);toggle.setAttribute('aria-expanded',String(opening))});
   document.querySelector('.marker-options').addEventListener('click',event=>{const button=event.target.closest('[data-marker]');if(!button)return;markerStyle=button.dataset.marker;localStorage.setItem('chargerx-marker-style',markerStyle);updateButtons();updateLocationIcon();picker.hidden=true;toggle.classList.remove('active');toggle.setAttribute('aria-expanded','false')});
   const applyMarkerColor=()=>{markerColor=colorInput.value;localStorage.setItem('chargerx-marker-color',markerColor);updateLocationIcon()};colorInput.addEventListener('input',applyMarkerColor);colorInput.addEventListener('change',applyMarkerColor);
+  const autoInput=document.getElementById('autoDarkMode');if(autoInput){autoInput.checked=autoDarkMode;autoInput.addEventListener('change',()=>{autoDarkMode=autoInput.checked;localStorage.setItem('chargerx-map-auto-dark',String(autoDarkMode));if(autoDarkMode)applyDarkMode(timeWantsDark())})}
 }
 function watchLocation(){
   if(!navigator.geolocation)return message('მდებარეობის სერვისი მიუწვდომელია');
@@ -123,7 +126,9 @@ function updateManeuver(){
   const nextStep=currentLeg.steps[currentStepIndex+1];document.getElementById('maneuverDistance').textContent=distance?(Math.round(distance)+' '+mapUnitM):(step.distance?.text||'—');document.getElementById('maneuverText').textContent=step.instructions.replace(/<[^>]+>/g,' ');document.getElementById('maneuverNext').textContent=nextStep?(mapCopy.next+' '+nextStep.instructions.replace(/<[^>]+>/g,' ')):mapCopy.ahead;
   document.getElementById('maneuverArrow').textContent=/left/i.test(step.maneuver||'')?'←':/right/i.test(step.maneuver||'')?'→':'↑';
 }
-function toggleTheme(){darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);createMap();updateLocationIcon();document.getElementById('themeButton').textContent=darkMode?'☀':'☾'}
+function applyDarkMode(next){if(darkMode===next)return;darkMode=next;document.body.classList.toggle('dark',darkMode);localStorage.setItem('chargerx-map-dark',String(darkMode));createMap();updateLocationIcon();document.getElementById('themeButton').textContent=darkMode?'☀':'☾'}
+function toggleTheme(){autoDarkMode=false;localStorage.setItem('chargerx-map-auto-dark','false');const autoInput=document.getElementById('autoDarkMode');if(autoInput)autoInput.checked=false;applyDarkMode(!darkMode)}
+setInterval(()=>{if(autoDarkMode)applyDarkMode(timeWantsDark())},60000);
 function toggle3d(){is3d=!is3d;localStorage.setItem('chargerx-map-3d',String(is3d));if(is3d&&map.getZoom()<18)map.setZoom(18);map.setHeading(is3d?lastHeading:0);map.setTilt(is3d?60:0);updateLocationIcon();document.getElementById('mode3dButton').classList.toggle('active',is3d)}
 function toggleTraffic(){trafficVisible=!trafficVisible;localStorage.setItem('chargerx-map-traffic',String(trafficVisible));trafficLayer.setMap(trafficVisible?map:null);document.getElementById('trafficButton').classList.toggle('active',trafficVisible)}
 function setManualDestination(position,label='რუკაზე არჩეული ადგილი'){
