@@ -31,7 +31,6 @@ window.initGoogleMap=function(){
   autocomplete.addListener('place_changed',()=>{const place=autocomplete.getPlace();if(place.geometry?.location)buildRoute(place.geometry.location)});
   document.getElementById('routeForm').addEventListener('submit',event=>{event.preventDefault();const place=autocomplete.getPlace();if(place.geometry?.location)buildRoute(place.geometry.location);else message('აირჩიეთ მისამართი Google-ის შედეგებიდან')});
   document.getElementById('locateButton')?.addEventListener('click',focusLocation);
-  document.getElementById('recenterButton')?.addEventListener('click',recenterNavigation);
   document.getElementById('themeButton').addEventListener('click',toggleTheme);
   document.getElementById('mode3dButton').addEventListener('click',toggle3d);
   document.getElementById('trafficButton').addEventListener('click',toggleTraffic);
@@ -44,7 +43,7 @@ window.initGoogleMap=function(){
 };
 function createMap(){
   const center=map?.getCenter()||currentPosition||defaultCenter,zoom=map?.getZoom()||13,savedRoute=directionsRenderer?.getDirections();
-  map=new google.maps.Map(document.getElementById('map'),{center,zoom,disableDefaultUI:true,gestureHandling:'greedy',isFractionalZoomEnabled:true,renderingType:google.maps.RenderingType.VECTOR,colorScheme:darkMode?google.maps.ColorScheme.DARK:google.maps.ColorScheme.LIGHT,headingInteractionEnabled:true,tiltInteractionEnabled:true,tilt:is3d?60:0});
+  map=new google.maps.Map(document.getElementById('map'),{center,zoom,disableDefaultUI:true,gestureHandling:'greedy',isFractionalZoomEnabled:true,renderingType:google.maps.RenderingType.VECTOR,colorScheme:darkMode?google.maps.ColorScheme.DARK:google.maps.ColorScheme.LIGHT,headingInteractionEnabled:true,tiltInteractionEnabled:true,clickableIcons:true,tilt:is3d?60:0});
   if(directionsRenderer){directionsRenderer.setMap(map);if(savedRoute)directionsRenderer.setDirections(savedRoute)}
   if(userMarker)userMarker.setMap(map);
   if(manualDestinationMarker)manualDestinationMarker.setMap(map);
@@ -52,8 +51,8 @@ function createMap(){
   if(trafficVisible)trafficLayer?.setMap(map);
   placesService=new google.maps.places.PlacesService(map);
   autocomplete?.bindTo('bounds',map);
-  map.addListener('click',event=>{if(document.body.classList.contains('navigating'))return;if(event.placeId){event.stop?.();showPlaceCard(event.placeId,event.latLng)}else{hidePlaceCard();setManualDestination(event.latLng)}});
-  map.addListener('dragstart',()=>{if(document.body.classList.contains('navigating')){navigationFollowing=false;document.getElementById('recenterButton')?.removeAttribute('hidden')}});
+  map.addListener('click',event=>{if(document.body.classList.contains('navigating'))return;if(event.placeId){if(typeof event.stop==='function')event.stop();showPlaceCard(event.placeId,event.latLng)}else{hidePlaceCard();setManualDestination(event.latLng)}});
+  map.addListener('dragstart',()=>{if(document.body.classList.contains('navigating'))navigationFollowing=false});
 }
 const vehicleImages={};
 function loadVehicle(model){const variant=is3d?model+'-3d-v2':model;return vehicleImages[variant]||(vehicleImages[variant]=new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=`/map/vehicles/${variant}.png`}))}
@@ -88,7 +87,7 @@ function watchLocation(){
     if(document.body.classList.contains('navigating')){if(navigationFollowing)updateNavigationCamera();updateLocationIcon();updateManeuver()}else if(is3d){map.setHeading(lastHeading);updateLocationIcon()}
   },()=>message('ჩართეთ მდებარეობაზე წვდომა'),{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
-function focusLocation(){if(!currentPosition)return message('მდებარეობა ჯერ არ არის მიღებული');map.panTo(currentPosition);map.setZoom(17)}
+function focusLocation(){if(!currentPosition)return message('მდებარეობა ჯერ არ არის მიღებული');if(document.body.classList.contains('navigating')){navigationFollowing=true;updateNavigationCamera()}else{map.panTo(currentPosition);map.setZoom(17)}}
 function normalizedHeading(value){return(value%360+360)%360}
 function smoothAngle(from,to,amount){const delta=((to-from+540)%360)-180;return normalizedHeading(from+delta*amount)}
 function cardinalDirection(heading){return['N','NE','E','SE','S','SW','W','NW'][Math.round(normalizedHeading(heading)/45)%8]}
@@ -100,7 +99,6 @@ function updateNavigationCamera(){
   const zoom=currentSpeedKmh>90?15.8:currentSpeedKmh>60?16.15:currentSpeedKmh>20?16.6:17.1;
   map.panTo(cameraCenter);map.setHeading(smoothedHeading);map.setTilt(is3d?60:0);map.setZoom(zoom);
 }
-function recenterNavigation(){if(!currentPosition)return message('მდებარეობა ჯერ არ არის მიღებული');navigationFollowing=true;document.getElementById('recenterButton')?.setAttribute('hidden','');updateNavigationCamera()}
 function buildRoute(destination,manual=false){
   if(!manual&&manualDestinationMarker){manualDestinationMarker.setMap(null);manualDestinationMarker=null}
   directionsService.route({origin:currentPosition||defaultCenter,destination,travelMode:google.maps.TravelMode.DRIVING,provideRouteAlternatives:true},(result,status)=>{
@@ -118,7 +116,7 @@ function selectRoute(index){
   routePolylines.forEach((line,lineIndex)=>line.setOptions({strokeColor:lineIndex===index?'#1a73e8':'#657180',strokeOpacity:lineIndex===index?1:.75,strokeWeight:lineIndex===index?8:6,zIndex:lineIndex===index?20:10}));
   document.getElementById('routeDistance').textContent=currentLeg.distance?.text||'—';document.getElementById('routeDuration').textContent=currentLeg.duration?.text||'—';document.getElementById('routeArrival').textContent=new Date(Date.now()+(currentLeg.duration?.value||0)*1000).toLocaleTimeString(mapLocale,{hour:'2-digit',minute:'2-digit'});
 }
-function startNavigation(){if(!currentLeg)return;navigationFollowing=true;document.getElementById('recenterButton')?.setAttribute('hidden','');smoothedHeading=normalizedHeading(lastHeading);routePolylines.forEach((line,index)=>line.setVisible(index===currentRouteIndex));document.body.classList.add('navigating');document.getElementById('maneuver').hidden=false;document.getElementById('routeOptions').hidden=true;if(currentPosition)updateNavigationCamera();else map.moveCamera({center:map.getCenter(),zoom:17.1,tilt:is3d?60:0,heading:lastHeading});updateLocationIcon();updateManeuver()}
+function startNavigation(){if(!currentLeg)return;navigationFollowing=true;smoothedHeading=normalizedHeading(lastHeading);routePolylines.forEach((line,index)=>line.setVisible(index===currentRouteIndex));document.body.classList.add('navigating');document.getElementById('maneuver').hidden=false;document.getElementById('routeOptions').hidden=true;if(currentPosition)updateNavigationCamera();else map.moveCamera({center:map.getCenter(),zoom:17.1,tilt:is3d?60:0,heading:lastHeading});updateLocationIcon();updateManeuver()}
 function updateManeuver(){
   if(!currentLeg?.steps?.length||!currentPosition)return;let step=currentLeg.steps[currentStepIndex];let distance=google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentPosition),step.end_location);
   if(distance<30&&currentStepIndex<currentLeg.steps.length-1){currentStepIndex++;step=currentLeg.steps[currentStepIndex];distance=google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentPosition),step.end_location)}
@@ -139,5 +137,5 @@ function showPlaceCard(placeId,fallbackPosition){
   });
 }
 function hidePlaceCard(){selectedPlacePosition=null;document.getElementById('placeCard').hidden=true}
-function clearRoute(){document.body.classList.remove('navigating');document.getElementById('routeSummary').hidden=true;document.getElementById('routeOptions').hidden=true;document.getElementById('maneuver').hidden=true;document.getElementById('recenterButton')?.setAttribute('hidden','');routePolylines.forEach(line=>line.setMap(null));routePolylines=[];directionsRenderer?.setMap(null);directionsRenderer=new google.maps.DirectionsRenderer({map,suppressPolylines:true});currentLeg=null;currentDirectionsResult=null;currentRouteIndex=0;currentStepIndex=0;navigationFollowing=true;hidePlaceCard();manualDestinationMarker?.setMap(null);manualDestinationMarker=null;document.getElementById('destination').value=String();if(currentPosition){map.moveCamera({center:currentPosition,zoom:17,heading:is3d?lastHeading:0,tilt:is3d?60:0})}else{map.setHeading(is3d?lastHeading:0)}updateLocationIcon()}
+function clearRoute(){document.body.classList.remove('navigating');document.getElementById('routeSummary').hidden=true;document.getElementById('routeOptions').hidden=true;document.getElementById('maneuver').hidden=true;routePolylines.forEach(line=>line.setMap(null));routePolylines=[];directionsRenderer?.setMap(null);directionsRenderer=new google.maps.DirectionsRenderer({map,suppressPolylines:true});currentLeg=null;currentDirectionsResult=null;currentRouteIndex=0;currentStepIndex=0;navigationFollowing=true;hidePlaceCard();manualDestinationMarker?.setMap(null);manualDestinationMarker=null;document.getElementById('destination').value=String();if(currentPosition){map.moveCamera({center:currentPosition,zoom:17,heading:is3d?lastHeading:0,tilt:is3d?60:0})}else{map.setHeading(is3d?lastHeading:0)}updateLocationIcon()}
 loadGoogleMaps();
