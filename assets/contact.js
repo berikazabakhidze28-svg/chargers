@@ -1,9 +1,28 @@
 (() => {
-  const grid=document.querySelector('[data-contact-grid]'),map=document.querySelector('[data-contact-map]');
-  if(!grid)return;
-  const socialHref=(type,value)=>{if(/^https?:\/\//i.test(value)||/^[a-z]+:\/\//i.test(value))return value;const number=value.replace(/\D/g,'');return type==='whatsapp'?`https://wa.me/${number}`:`viber://chat?number=${number}`};
+  const panel=document.querySelector('.contact-panel');
+  if(!panel)return;
   const safeMapUrl=value=>{try{const url=new URL(value);return url.protocol==='https:'?url.href:''}catch{return ''}};
-  const addCard=(label,title,href)=>{if(!title||!href)return;const link=document.createElement('a');link.className='contact-card';link.href=href;if(/^https?:/i.test(href)){link.target='_blank';link.rel='noopener'};const small=document.createElement('small'),heading=document.createElement('h2'),action=document.createElement('span');small.textContent=label;heading.textContent=title;action.textContent='დაკავშირება →';link.append(small,heading,action);grid.append(link)};
-  const render=settings=>{if(grid.dataset.ready)return;grid.dataset.ready='true';addCard('ტელეფონი',settings.phone,settings.phone?`tel:${String(settings.phone).replace(/[^+\d]/g,'')}`:'');addCard('ელფოსტა',settings.email,settings.email?`mailto:${settings.email}`:'');addCard('სწრაფი პასუხი','WhatsApp',settings.whatsapp?socialHref('whatsapp',settings.whatsapp):'');addCard('სწრაფი პასუხი','Viber',settings.viber?socialHref('viber',settings.viber):'');const url=safeMapUrl(settings.map_embed_url||'');if(map&&(settings.address||url)){map.hidden=false;map.querySelector('[data-contact-address]').textContent=settings.address||'ChargerX';const frame=map.querySelector('iframe');if(url)frame.src=url;else frame.hidden=true}};
-  if(window.CHARGERX_SITE_SETTINGS)render(window.CHARGERX_SITE_SETTINGS);else window.addEventListener('chargerx:settings',event=>render(event.detail),{once:true});
+  const socialHref=(type,value)=>{if(/^https?:\/\//i.test(value)||/^[a-z]+:\/\//i.test(value))return value;const number=value.replace(/\D/g,'');return type==='whatsapp'?`https://wa.me/${number}`:`viber://chat?number=${number}`};
+  const render=settings=>{
+    if(panel.dataset.ready)return;
+    panel.dataset.ready='true';
+    const address=settings.address||'ანგია ბოჭორიშვილის ქუჩა 39, თბილისი 0100';
+    const phone=settings.phone||'+995 551 54 64 46';
+    const email=settings.email||'info@chargerx.ge';
+    const mapUrl=safeMapUrl(settings.map_embed_url||'');
+    const addressLink=panel.querySelector('[data-contact-address-link]');
+    addressLink.href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    panel.querySelector('[data-contact-address]').textContent=address;
+    const phoneLink=panel.querySelector('[data-contact-phone]');
+    phoneLink.href=`tel:${String(phone).replace(/[^+\d]/g,'')}`;
+    panel.querySelector('[data-contact-phone-text]').textContent=phone;
+    const emailLink=panel.querySelector('[data-contact-email]');
+    emailLink.href=`mailto:${email}`;
+    panel.querySelector('[data-contact-email-text]').textContent=email;
+    panel.querySelectorAll('[data-contact-social]').forEach(link=>{const type=link.dataset.contactSocial,value=String(settings[type]||'').trim();if(!value)return;link.href=(type==='whatsapp'||type==='viber')?socialHref(type,value):value;link.hidden=false});
+    const map=panel.querySelector('[data-contact-map]'),frame=map.querySelector('iframe'),directions=map.querySelector('[data-contact-directions]');
+    if(mapUrl){frame.src=mapUrl;let destination='';try{destination=new URL(mapUrl).searchParams.get('q')||''}catch{}const coordinates=destination.split(',').map(Number);if(coordinates.length===2&&coordinates.every(Number.isFinite))directions.href=`/map/?lat=${coordinates[0]}&lng=${coordinates[1]}&label=${encodeURIComponent(address)}`;else directions.href=`/map/?label=${encodeURIComponent(address)}`}else map.hidden=true;
+  };
+  if(window.CHARGERX_SITE_SETTINGS)render(window.CHARGERX_SITE_SETTINGS);
+  else window.addEventListener('chargerx:settings',event=>render(event.detail),{once:true});
 })();

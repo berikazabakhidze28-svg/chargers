@@ -9,6 +9,8 @@ const mapLocale={ka:'ka-GE',en:'en-US',ru:'ru-RU'}[mapLanguage];
 const mapUnitM={ka:'მ',en:'m',ru:'м'}[mapLanguage];
 const mapCopy={ka:{next:'შემდეგ:',ahead:'დანიშნულების ადგილი წინ არის',route:'მარშრუტი',destination:'დანიშნულების ადგილი'},en:{next:'Next:',ahead:'The destination is ahead',route:'Route',destination:'Destination'},ru:{next:'Далее:',ahead:'Пункт назначения впереди',route:'Маршрут',destination:'Пункт назначения'}}[mapLanguage];
 const defaultCenter={lat:41.7151,lng:44.8271};
+const externalRouteParams=new URLSearchParams(location.search),externalRouteLat=Number(externalRouteParams.get('lat')),externalRouteLng=Number(externalRouteParams.get('lng')),externalRouteLabel=externalRouteParams.get('label')||mapCopy.destination;
+let pendingExternalRoute=externalRouteParams.has('lat')&&externalRouteParams.has('lng')&&Number.isFinite(externalRouteLat)&&Number.isFinite(externalRouteLng)&&Math.abs(externalRouteLat)<=90&&Math.abs(externalRouteLng)<=180?{position:{lat:externalRouteLat,lng:externalRouteLng},label:externalRouteLabel}:null;
 const message=text=>{const el=document.getElementById('mapMessage');el.textContent=text;el.hidden=false;clearTimeout(message.timer);message.timer=setTimeout(()=>el.hidden=true,3500)};
 async function loadGoogleMaps(){
   try{
@@ -87,6 +89,7 @@ function watchLocation(){
     if(previousPosition&&google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(previousPosition),new google.maps.LatLng(currentPosition))>2)lastHeading=google.maps.geometry.spherical.computeHeading(new google.maps.LatLng(previousPosition),new google.maps.LatLng(currentPosition));else if((position.coords.speed||0)>1&&Number.isFinite(position.coords.heading))lastHeading=position.coords.heading;
     if(userMarker)userMarker.setPosition(currentPosition);else userMarker=new google.maps.Marker({map,position:currentPosition,title:'ჩემი მდებარეობა',zIndex:1000,clickable:false,keyboardShortcuts:false});updateLocationIcon();
     if(!hasInitialFocus){hasInitialFocus=true;map.panTo(currentPosition);map.setZoom(17)}
+    if(pendingExternalRoute){const route=pendingExternalRoute;pendingExternalRoute=null;setManualDestination(route.position,route.label)}
     if(document.body.classList.contains('navigating')){if(navigationFollowing)updateNavigationCamera();updateLocationIcon();updateManeuver()}else if(is3d){map.setHeading(lastHeading);updateLocationIcon()}
   },()=>message('ჩართეთ მდებარეობაზე წვდომა'),{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
