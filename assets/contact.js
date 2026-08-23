@@ -1,0 +1,9 @@
+(() => {
+  const grid=document.querySelector('[data-contact-grid]'),map=document.querySelector('[data-contact-map]');
+  if(!grid)return;
+  const socialHref=(type,value)=>{if(/^https?:\/\//i.test(value)||/^[a-z]+:\/\//i.test(value))return value;const number=value.replace(/\D/g,'');return type==='whatsapp'?`https://wa.me/${number}`:`viber://chat?number=${number}`};
+  const safeMapUrl=value=>{try{const url=new URL(value);return url.protocol==='https:'?url.href:''}catch{return ''}};
+  const addCard=(label,title,href)=>{if(!title||!href)return;const link=document.createElement('a');link.className='contact-card';link.href=href;if(/^https?:/i.test(href)){link.target='_blank';link.rel='noopener'};const small=document.createElement('small'),heading=document.createElement('h2'),action=document.createElement('span');small.textContent=label;heading.textContent=title;action.textContent='დაკავშირება →';link.append(small,heading,action);grid.append(link)};
+  const render=settings=>{if(grid.dataset.ready)return;grid.dataset.ready='true';addCard('ტელეფონი',settings.phone,settings.phone?`tel:${String(settings.phone).replace(/[^+\d]/g,'')}`:'');addCard('ელფოსტა',settings.email,settings.email?`mailto:${settings.email}`:'');addCard('სწრაფი პასუხი','WhatsApp',settings.whatsapp?socialHref('whatsapp',settings.whatsapp):'');addCard('სწრაფი პასუხი','Viber',settings.viber?socialHref('viber',settings.viber):'');const url=safeMapUrl(settings.map_embed_url||'');if(map&&(settings.address||url)){map.hidden=false;map.querySelector('[data-contact-address]').textContent=settings.address||'ChargerX';const frame=map.querySelector('iframe');if(url)frame.src=url;else frame.hidden=true}};
+  if(window.CHARGERX_SITE_SETTINGS)render(window.CHARGERX_SITE_SETTINGS);else window.addEventListener('chargerx:settings',event=>render(event.detail),{once:true});
+})();

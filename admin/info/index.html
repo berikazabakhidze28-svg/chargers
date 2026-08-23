@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>საიტის ინფორმაცია — ChargerX</title>
+  <link rel="icon" type="image/jpeg" href="/fav.jpg">
+  <link rel="stylesheet" href="/assets/site.css?v=2">
+  <link rel="stylesheet" href="/assets/admin.css?v=2">
+  <link rel="stylesheet" href="/assets/admin-nav.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="/assets/supabase-config.js"></script>
+  <script defer src="/assets/admin-info.js?v=1"></script>
+</head>
+<body class="admin-body">
+  <header class="admin-top"><div class="admin-shell"><a class="brand" href="/"><img class="brand-logo" src="/logo.png" alt="ChargerX"></a><nav><a class="admin-nav-link" href="/admin/">პროდუქტები</a><a class="admin-nav-link" href="/admin/chargers/">დამტენები</a><a class="admin-nav-link active" href="/admin/info/">ინფორმაცია</a><small data-admin-email></small><button data-sign-out>გასვლა</button></nav></div></header>
+  <main class="admin-shell">
+    <div class="admin-heading"><div><p class="eyebrow"><i></i> მართვის პანელი</p><h1>საიტის ინფორმაცია</h1></div></div>
+    <section class="social-settings-card info-settings-card">
+      <div><p class="eyebrow"><i></i> CONTACT & SOCIAL</p><h2>საკონტაქტო მონაცემები</h2><p>აქ შენახული ინფორმაცია გამოიყენება საიტის ზედა ზოლში, სოციალურ ღილაკებსა და კონტაქტის გვერდზე. ცარიელი სოციალური ბმული საიტზე არ გამოჩნდება.</p></div>
+      <form class="social-settings-form info-settings-form" data-info-settings>
+        <div class="field"><label>ტელეფონის ნომერი</label><input name="phone" type="tel" placeholder="+995 551 54 64 46"></div>
+        <div class="field"><label>ელფოსტა</label><input name="email" type="email" placeholder="info@chargerx.ge"></div>
+        <div class="field"><label>WhatsApp — ნომერი ან ბმული</label><input name="whatsapp" placeholder="995551546446"></div>
+        <div class="field"><label>Viber — ნომერი ან ბმული</label><input name="viber" placeholder="995551546446"></div>
+        <div class="field"><label>Facebook URL</label><input name="facebook" type="url" placeholder="https://www.facebook.com/..."></div>
+        <div class="field"><label>TikTok URL</label><input name="tiktok" type="url" placeholder="https://www.tiktok.com/@..."></div>
+        <div class="field wide"><label>მისამართი — კონტაქტის გვერდისთვის</label><input name="address" placeholder="თბილისი, ქუჩა და ნომერი"></div>
+        <div class="field wide"><label>Google Maps Embed URL</label><textarea name="map_embed_url" placeholder="Google Maps → Share → Embed a map → iframe-ის src ბმული"></textarea><small>ჩასვი მხოლოდ iframe-ის <b>src</b> მისამართი, არა მთლიანი iframe კოდი.</small></div>
+        <div class="info-map-preview wide" data-map-preview hidden><iframe title="კონტაქტის რუკის წინასწარი ნახვა" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <p class="form-message" data-info-message></p>
+        <button class="button admin-submit" type="submit">შენახვა</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
