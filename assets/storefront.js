@@ -1,7 +1,7 @@
 const fallbackProducts = window.CHARGERX_PRODUCTS || [];
 let products = fallbackProducts;
 const money = value => `₾ ${Number(value).toLocaleString('ka-GE')}`;
-const normalize = row => ({id:row.id,name:row.name,category:row.category,categoryLabel:row.category_label,price:Number(row.price),image:row.image_url||'/logo-mark.png',badge:row.badge,models:row.models||[],description:row.description||''});
+const normalize = row => ({id:row.id,name:row.name,category:row.category,categoryLabel:row.category_label,price:Number(row.price),oldPrice:row.old_price==null?null:Number(row.old_price),image:row.image_url||'/logo-mark.png',badge:row.badge,models:row.models||[],description:row.description||''});
 
 async function loadProducts(){
   try{
@@ -12,8 +12,7 @@ async function loadProducts(){
   }catch(error){console.warn('ChargerX: fallback catalog is active.',error)}
 }
 
-const card = product => `<a class="product-card" data-category="${product.category}" href="/product/?id=${product.id}"><div class="product-image"><img src="${product.image}" alt="${product.name}" loading="lazy">${product.badge?`<span>${product.badge}</span>`:''}</div><small>${product.categoryLabel}</small><h3>${product.name}</h3><p>${money(product.price)}</p></a>`;
-const getCart=()=>JSON.parse(localStorage.getItem('chargerx-cart')||'[]');
+const card=product=>{const discounted=Number.isFinite(product.oldPrice)&&product.oldPrice>product.price,badge=product.badge||(discounted?'ფასდაკლება':'');return `<article class="product-card" data-category="${product.category}"><a class="product-card-link" href="/product/?id=${product.id}"><div class="product-image"><img src="${product.image}" alt="${product.name}" loading="lazy">${badge?`<span>${badge}</span>`:''}</div><h3>${product.name}</h3></a><div class="product-card-footer"><div class="product-prices">${discounted?`<del>${money(product.oldPrice)}</del>`:''}<strong>${money(product.price)}</strong></div><a class="product-order" href="https://wa.me/995551546446?text=${encodeURIComponent(`გამარჯობა, მაინტერესებს ${product.name}`)}" target="_blank" rel="noopener" data-ka="შეკვეთა" data-en="Order" data-ru="Заказать">შეკვეთა</a></div></article>`};const getCart=()=>JSON.parse(localStorage.getItem('chargerx-cart')||'[]');
 const setCart=cart=>{localStorage.setItem('chargerx-cart',JSON.stringify(cart));updateCartCount()};
 const updateCartCount=()=>document.querySelectorAll('[data-cart-count]').forEach(el=>el.textContent=getCart().reduce((sum,item)=>sum+item.qty,0));
 
@@ -32,7 +31,7 @@ function setupDetail(){
   const id=Number(new URLSearchParams(location.search).get('id')),product=products.find(x=>x.id===id)||products[0];
   if(!product){root.innerHTML='<div class="empty-state">პროდუქტი ვერ მოიძებნა.</div>';return}
   document.title=`${product.name} — ChargerX`;
-  root.innerHTML=`<div class="detail-image"><img src="${product.image}" alt="${product.name}"></div><div class="detail-copy"><a class="back-link" href="/">← მაღაზიაში დაბრუნება</a><small>${product.categoryLabel}</small><h1>${product.name}</h1><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><div class="compatibility"><span>თავსებადობა</span><p>${product.models.join(' · ')||'დეტალები დასაზუსტებელია'}</p></div><div class="detail-actions"><a class="button primary" target="_blank" rel="noopener" href="https://wa.me/995551546446?text=${encodeURIComponent(`გამარჯობა, მაინტერესებს ${product.name}`)}">WhatsApp</a></div></div>`;
+  root.innerHTML=`<div class="detail-image"><img src="${product.image}" alt="${product.name}"></div><div class="detail-copy"><a class="back-link" href="/">← მაღაზიაში დაბრუნება</a><small>${product.categoryLabel}</small><h1>${product.name}</h1><div class="detail-price">${product.oldPrice>product.price?`<del>${money(product.oldPrice)}</del>`:``}<strong>${money(product.price)}</strong></div><p class="detail-description">${product.description}</p><div class="compatibility"><span>თავსებადობა</span><p>${product.models.join(' · ')||'დეტალები დასაზუსტებელია'}</p></div><div class="detail-actions"><a class="button primary" target="_blank" rel="noopener" href="https://wa.me/995551546446?text=${encodeURIComponent(`გამარჯობა, მაინტერესებს ${product.name}`)}">WhatsApp</a></div></div>`;
 }
 
 function renderCart(){

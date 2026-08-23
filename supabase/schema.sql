@@ -5,6 +5,7 @@ create table if not exists public.products (
   category text not null check (category in ('charger','adapter','accessory')),
   category_label text not null default 'აქსესუარი',
   price numeric(10,2) not null check (price >= 0),
+  old_price numeric(10,2) check (old_price is null or old_price >= 0),
   image_url text,
   description text not null default '',
   models text[] not null default '{}',
@@ -15,6 +16,7 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+alter table public.products add column if not exists old_price numeric(10,2) check (old_price is null or old_price >= 0);
 alter table public.products enable row level security;
 drop policy if exists "Public can read active products" on public.products;
 create policy "Public can read active products" on public.products for select using (is_active = true or auth.role() = 'authenticated');
