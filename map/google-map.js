@@ -1,7 +1,7 @@
-let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,currentDirectionsResult,currentRouteIndex=0,routePolylines=[],watchId,currentStepIndex=0,hasInitialFocus=false,trafficLayer,lastHeading=0,smoothedHeading=0,currentSpeedKmh=0,manualDestinationMarker,placesService,selectedPlacePosition;
+let map,autocomplete,directionsService,directionsRenderer,currentPosition,userMarker,currentLeg,currentDirectionsResult,currentRouteIndex=0,routePolylines=[],watchId,currentStepIndex=0,hasInitialFocus=false,trafficLayer,lastHeading=0,smoothedHeading=0,currentSpeedKmh=0,manualDestinationMarker,placesService,selectedPlacePosition,wmsLayerConfigs=[],radarMarkers=[],radarLayerAvailable=false;
 const timeWantsDark=()=>{const hour=new Date().getHours();return hour>=19||hour<7};
 let autoDarkMode=localStorage.getItem('chargerx-map-auto-dark')==='true';
-let darkMode=autoDarkMode?timeWantsDark():localStorage.getItem('chargerx-map-dark')==='true',is3d=localStorage.getItem('chargerx-map-3d')==='true',trafficVisible=localStorage.getItem('chargerx-map-traffic')==='true',navigationFollowing=true;
+let darkMode=autoDarkMode?timeWantsDark():localStorage.getItem('chargerx-map-dark')==='true',is3d=localStorage.getItem('chargerx-map-3d')==='true',trafficVisible=localStorage.getItem('chargerx-map-traffic')==='true',radarVisible=localStorage.getItem('chargerx-map-radars')!=='false',navigationFollowing=true;
 let markerStyle=localStorage.getItem('chargerx-marker-style')||'model-3';
 let markerColor=/^#[0-9a-f]{6}$/i.test(localStorage.getItem('chargerx-marker-color')||'')?localStorage.getItem('chargerx-marker-color'):'#e82127';
 const mapLanguage=['ka','en','ru'].includes(localStorage.getItem('chargerx-language'))?localStorage.getItem('chargerx-language'):'ka';
@@ -25,9 +25,10 @@ async function loadGoogleMaps(){
 }
 window.initGoogleMap=function(){
   createMap();
+  loadWmsLayers();
   watchLocation();
   setupMarkerPicker();
-  trafficLayer=new google.maps.TrafficLayer();if(trafficVisible)trafficLayer.setMap(map);document.getElementById('mode3dButton').classList.toggle('active',is3d);document.getElementById('trafficButton').classList.toggle('active',trafficVisible);
+  trafficLayer=new google.maps.TrafficLayer();if(trafficVisible)trafficLayer.setMap(map);document.getElementById('mode3dButton').classList.toggle('active',is3d);setupLayerPicker();
   directionsService=new google.maps.DirectionsService();
   directionsRenderer=new google.maps.DirectionsRenderer({map,suppressPolylines:true});
   autocomplete=new google.maps.places.Autocomplete(document.getElementById('destination'),{componentRestrictions:{country:'ge'},fields:['geometry','formatted_address','name']});
@@ -38,6 +39,10 @@ window.initGoogleMap=function(){
   document.getElementById('themeButton').addEventListener('click',toggleTheme);
   document.getElementById('mode3dButton').addEventListener('click',toggle3d);
   document.getElementById('trafficButton').addEventListener('click',toggleTraffic);
+  document.getElementById('fullscreenButton')?.addEventListener('click',toggleFullscreen);
+  document.addEventListener('fullscreenchange',updateFullscreenButton);
+  document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
+  updateFullscreenButton();
   document.getElementById('startRoute').addEventListener('click',startNavigation);
   document.getElementById('moreRoutes').addEventListener('click',()=>{const options=document.getElementById('routeOptions');options.hidden=!options.hidden});
   document.getElementById('routeOptions').addEventListener('click',event=>{const option=event.target.closest('[data-route-index]');if(option)selectRoute(Number(option.dataset.routeIndex))});
@@ -45,9 +50,17 @@ window.initGoogleMap=function(){
   document.getElementById('placeClose').addEventListener('click',hidePlaceCard);
   document.getElementById('placeDirections').addEventListener('click',()=>{if(selectedPlacePosition){const position=selectedPlacePosition,label=document.getElementById('placeName').textContent;hidePlaceCard();setManualDestination(position,label)}});
 };
+const tileBounds3857=(coord,zoom)=>{const n=2**zoom,span=40075016.68557849/n,x=((coord.x%n)+n)%n;return[-20037508.342789244+x*span,20037508.342789244-(coord.y+1)*span,-20037508.342789244+(x+1)*span,20037508.342789244-coord.y*span]};
+function attachWmsLayers(){if(!map||!wmsLayerConfigs.length)return;wmsLayerConfigs.filter(layer=>layer.layer_type!=='markers').forEach(layer=>{const overlay=new google.maps.ImageMapType({name:layer.name,opacity:Number(layer.opacity??.8),tileSize:new google.maps.Size(256,256),getTileUrl:(coord,zoom)=>{if(coord.y<0||coord.y>=2**zoom)return null;const params=new URLSearchParams({service:'WMS',request:'GetMap',version:layer.version||'1.3.0',layers:layer.layers,styles:'',format:layer.format||'image/png',transparent:'true',width:'256',height:'256',crs:'EPSG:3857',bbox:tileBounds3857(coord,zoom).join(',')});return `${layer.service_url}?${params}`}});map.overlayMapTypes.push(overlay)})}
+const radarIcon=speed=>{const text=Number(speed)||'•',svg=`<svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="24" fill="#fff" stroke="#e82127" stroke-width="5"/><text x="27" y="33" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="800" fill="#16191c">${text}</text></svg>`;return{url:`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,scaledSize:new google.maps.Size(46,46),anchor:new google.maps.Point(23,23)}};
+function showRadarCard(radar,position){selectedPlacePosition=position;document.getElementById('placeName').textContent=radar.name;document.getElementById('placeAddress').textContent=`${radar.region||''}${radar.speed_limit?` · ლიმიტი ${radar.speed_limit} კმ/სთ`:''}`;document.getElementById('placeCard').hidden=false}
+async function attachRadarLayer(){radarLayerAvailable=wmsLayerConfigs.some(layer=>layer.layer_type==='markers'&&layer.layers==='city24_radars');syncLayerControls();if(!radarLayerAvailable){radarMarkers.forEach(marker=>marker.setMap(null));return}if(radarMarkers.length){radarMarkers.forEach(marker=>marker.setMap(radarVisible?map:null));return}try{const config=window.CHARGERX_SUPABASE,response=await fetch(`${config.url}/rest/v1/radars?select=id,name,region,latitude,longitude,speed_limit&order=id.asc`,{headers:{apikey:config.publishableKey}});if(!response.ok)throw new Error(`HTTP ${response.status}`);const radars=await response.json();radarMarkers=radars.map(radar=>{const position={lat:Number(radar.latitude),lng:Number(radar.longitude)},marker=new google.maps.Marker({map:radarVisible?map:null,position,title:`${radar.name} — ${radar.speed_limit||''}`,icon:radarIcon(radar.speed_limit),zIndex:300});marker.addListener('click',()=>showRadarCard(radar,position));return marker})}catch(error){console.warn('ChargerX: radar layer unavailable.',error)}}
+async function loadWmsLayers(){try{const config=window.CHARGERX_SUPABASE,response=await fetch(`${config.url}/rest/v1/map_layers?select=name,service_url,layers,layer_type,version,format,opacity,attribution&enabled=eq.true&order=sort_order.asc,id.asc`,{headers:{apikey:config.publishableKey}});if(!response.ok)throw new Error(`HTTP ${response.status}`);wmsLayerConfigs=await response.json();attachWmsLayers();attachRadarLayer()}catch(error){console.warn('ChargerX: map layers unavailable.',error)}}
 function createMap(){
   const center=map?.getCenter()||currentPosition||defaultCenter,zoom=map?.getZoom()||13,savedRoute=directionsRenderer?.getDirections();
   map=new google.maps.Map(document.getElementById('map'),{center,zoom,disableDefaultUI:true,gestureHandling:'greedy',isFractionalZoomEnabled:true,renderingType:google.maps.RenderingType.VECTOR,colorScheme:darkMode?google.maps.ColorScheme.DARK:google.maps.ColorScheme.LIGHT,headingInteractionEnabled:true,tiltInteractionEnabled:true,clickableIcons:true,tilt:is3d?60:0});
+  attachWmsLayers();
+  radarMarkers.forEach(marker=>marker.setMap(radarVisible&&radarLayerAvailable?map:null));
   if(directionsRenderer){directionsRenderer.setMap(map);if(savedRoute)directionsRenderer.setDirections(savedRoute)}
   if(userMarker)userMarker.setMap(map);
   if(manualDestinationMarker)manualDestinationMarker.setMap(map);
@@ -93,6 +106,8 @@ function watchLocation(){
     if(document.body.classList.contains('navigating')){if(navigationFollowing)updateNavigationCamera();updateLocationIcon();updateManeuver()}else if(is3d){map.setHeading(lastHeading);updateLocationIcon()}
   },()=>message('ჩართეთ მდებარეობაზე წვდომა'),{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
+function updateFullscreenButton(){const button=document.getElementById('fullscreenButton');if(!button)return;const active=Boolean(document.fullscreenElement||document.webkitFullscreenElement);button.classList.toggle('active',active);button.textContent=active?'↙':'⛶';button.setAttribute('aria-label',active?'სრული ეკრანიდან გამოსვლა':'სრულ ეკრანზე გადასვლა');button.title=active?'სრული ეკრანიდან გამოსვლა':'სრული ეკრანი'}
+async function toggleFullscreen(){const root=document.documentElement,isFullscreen=document.fullscreenElement||document.webkitFullscreenElement;try{if(isFullscreen){if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen()}else if(root.requestFullscreen)await root.requestFullscreen();else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen();else return message('სრული ეკრანის რეჟიმი მიუწვდომელია')}catch{message('სრული ეკრანის რეჟიმი ვერ ჩაირთო')}}
 function focusLocation(){if(!currentPosition)return message('მდებარეობა ჯერ არ არის მიღებული');if(document.body.classList.contains('navigating')){navigationFollowing=true;updateNavigationCamera()}else{map.panTo(currentPosition);map.setZoom(17)}}
 function normalizedHeading(value){return(value%360+360)%360}
 function smoothAngle(from,to,amount){const delta=((to-from+540)%360)-180;return normalizedHeading(from+delta*amount)}
@@ -133,7 +148,10 @@ function applyDarkMode(next){if(darkMode===next)return;darkMode=next;document.bo
 function toggleTheme(){autoDarkMode=false;localStorage.setItem('chargerx-map-auto-dark','false');const autoInput=document.getElementById('autoDarkMode');if(autoInput)autoInput.checked=false;applyDarkMode(!darkMode)}
 setInterval(()=>{if(autoDarkMode)applyDarkMode(timeWantsDark())},60000);
 function toggle3d(){is3d=!is3d;localStorage.setItem('chargerx-map-3d',String(is3d));if(is3d&&map.getZoom()<18)map.setZoom(18);map.setHeading(is3d?lastHeading:0);map.setTilt(is3d?60:0);updateLocationIcon();document.getElementById('mode3dButton').classList.toggle('active',is3d)}
-function toggleTraffic(){trafficVisible=!trafficVisible;localStorage.setItem('chargerx-map-traffic',String(trafficVisible));trafficLayer.setMap(trafficVisible?map:null);document.getElementById('trafficButton').classList.toggle('active',trafficVisible)}
+function syncLayerControls(){const trafficInput=document.getElementById('trafficToggle'),radarInput=document.getElementById('radarToggle'),radarLabel=document.getElementById('radarToggleLabel'),button=document.getElementById('trafficButton');if(trafficInput)trafficInput.checked=trafficVisible;if(radarInput){radarInput.checked=radarVisible;radarInput.disabled=!radarLayerAvailable}radarLabel?.classList.toggle('disabled',!radarLayerAvailable);button?.classList.toggle('active',trafficVisible||(radarVisible&&radarLayerAvailable))}
+function setupLayerPicker(){const button=document.getElementById('trafficButton'),picker=document.getElementById('layerPicker'),trafficInput=document.getElementById('trafficToggle'),radarInput=document.getElementById('radarToggle');if(!button||!picker)return;syncLayerControls();button.addEventListener('click',event=>{event.stopPropagation();const opening=picker.hidden;picker.hidden=!opening;button.setAttribute('aria-expanded',String(opening))});picker.addEventListener('click',event=>event.stopPropagation());trafficInput?.addEventListener('change',()=>toggleTraffic(trafficInput.checked));radarInput?.addEventListener('change',()=>toggleRadars(radarInput.checked));document.addEventListener('click',()=>{picker.hidden=true;button.setAttribute('aria-expanded','false')})}
+function toggleTraffic(next=!trafficVisible){trafficVisible=Boolean(next);localStorage.setItem('chargerx-map-traffic',String(trafficVisible));trafficLayer.setMap(trafficVisible?map:null);syncLayerControls()}
+function toggleRadars(next=!radarVisible){radarVisible=Boolean(next);localStorage.setItem('chargerx-map-radars',String(radarVisible));radarMarkers.forEach(marker=>marker.setMap(radarVisible&&radarLayerAvailable?map:null));syncLayerControls()}
 function setManualDestination(position,label='რუკაზე არჩეული ადგილი'){
   if(manualDestinationMarker)manualDestinationMarker.setPosition(position);else manualDestinationMarker=new google.maps.Marker({map,position,title:'დანიშნულების ადგილი',zIndex:900});
   document.getElementById('destination').value=label;buildRoute(position,true);

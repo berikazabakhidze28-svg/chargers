@@ -31,6 +31,6 @@ adminRoot?.addEventListener('click',async event=>{const edit=event.target.closes
 document.querySelector('[data-sign-out]')?.addEventListener('click',async()=>{await client.auth.signOut();location.replace('/login/')});
 if(adminRoot){
   const topNav=document.querySelector('.admin-top nav');
-  topNav?.insertAdjacentHTML('afterbegin','<a class="admin-nav-link active" href="/admin/">პროდუქტები</a><a class="admin-nav-link" href="/admin/chargers/">დამტენები</a><a class="admin-nav-link" href="/admin/info/">ინფორმაცია</a>');
+  topNav?.insertAdjacentHTML('afterbegin','<a class="admin-nav-link active" href="/admin/">პროდუქტები</a><a class="admin-nav-link" href="/admin/chargers/">დამტენები</a><a class="admin-nav-link" href="/admin/layers/">ფენები</a><a class="admin-nav-link" href="/admin/info/">ინფორმაცია</a>');
   requireAdmin().then(session=>{if(session)loadProducts()});
 }

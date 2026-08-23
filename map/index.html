@@ -8,11 +8,11 @@
   <title>ნავიგაცია — ChargerX</title>
   <link rel="icon" type="image/jpeg" href="/fav.jpg">
   <link rel="stylesheet" href="/assets/fonts.css?v=1">
-  <link rel="stylesheet" href="/map/google-map.css?v=23">
+  <link rel="stylesheet" href="/map/google-map.css?v=24">
   <script defer src="/assets/supabase-config.js"></script>
   <script defer src="/assets/i18n.js?v=5"></script>
   <script defer src="/map/map-i18n.js?v=3"></script>
-  <script defer src="/map/google-map.js?v=39"></script>
+  <script defer src="/map/google-map.js?v=43"></script>
 </head>
 <body>
   <main id="map" aria-label="Google Maps ნავიგაცია"></main>
@@ -47,11 +47,17 @@
   <div class="map-actions">
     <button id="locateButton" type="button" aria-label="ჩემი მდებარეობა"><img id="locateIcon" alt=""></button>
     <button id="mode3dButton" type="button" aria-label="3D რუკა">3D</button>
-    <button id="trafficButton" type="button" aria-label="საცობების ჩვენება">🚦</button>
+    <button id="trafficButton" type="button" aria-label="რუკის ფენები" aria-expanded="false">🚦</button>
     <button id="themeButton" type="button" aria-label="ღამის რეჟიმი">☾</button>
     <button id="markerPickerButton" type="button" aria-label="ლოკაციის ნიშნულის არჩევა" aria-expanded="false">⚙</button>
+    <button id="fullscreenButton" type="button" aria-label="სრულ ეკრანზე გადასვლა" title="სრული ეკრანი">⛶</button>
     <a href="/" aria-label="გასვლა">EXIT</a>
   </div>
+  <aside class="layer-picker" id="layerPicker" aria-label="რუკის ფენები" hidden>
+    <strong>რუკის ფენები</strong>
+    <label><span>🚦 საცობები</span><input id="trafficToggle" type="checkbox" role="switch"></label>
+    <label id="radarToggleLabel"><span>📷 რადარები</span><input id="radarToggle" type="checkbox" role="switch" disabled></label>
+  </aside>
   <aside class="marker-picker" id="markerPicker" aria-label="ლოკაციის ნიშნულის არჩევა" hidden>
     <strong>ნიშნული</strong>
     <div class="marker-options">
